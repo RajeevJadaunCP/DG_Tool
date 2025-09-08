@@ -1,0 +1,786 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{BDAE3F69-18A4-4285-B357-3DCEED537086}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>DG_Tool</RootNamespace>
+    <AssemblyName>DG_Tool</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <LangVersion>9.0</LangVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>colorplast_icon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="BouncyCastle.Crypto, Version=1.9.7.0, Culture=neutral, PublicKeyToken=0e99375e54769942, processorArchitecture=MSIL">
+      <HintPath>..\packages\BouncyCastle.NetCoreSdk.1.9.7\lib\net461\BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
+    <Reference Include="ClosedXML, Version=0.104.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ClosedXML.0.104.2\lib\netstandard2.0\ClosedXML.dll</HintPath>
+    </Reference>
+    <Reference Include="ClosedXML.Parser, Version=1.0.0.0, Culture=neutral, PublicKeyToken=1d5f7376574c51ec, processorArchitecture=MSIL">
+      <HintPath>..\packages\ClosedXML.Parser.1.2.0\lib\netstandard2.0\ClosedXML.Parser.dll</HintPath>
+    </Reference>
+    <Reference Include="Design">
+      <HintPath>C:\Users\rajeev.jadaun\Downloads\Design\Design.dll</HintPath>
+    </Reference>
+    <Reference Include="DocumentFormat.OpenXml, Version=3.1.1.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
+      <HintPath>..\packages\DocumentFormat.OpenXml.3.1.1\lib\net46\DocumentFormat.OpenXml.dll</HintPath>
+    </Reference>
+    <Reference Include="DocumentFormat.OpenXml.Framework, Version=3.1.1.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
+      <HintPath>..\packages\DocumentFormat.OpenXml.Framework.3.1.1\lib\net46\DocumentFormat.OpenXml.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="EPPlus, Version=8.0.2.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
+      <HintPath>..\packages\EPPlus.8.0.2\lib\net462\EPPlus.dll</HintPath>
+    </Reference>
+    <Reference Include="EPPlus.Interfaces, Version=8.0.0.0, Culture=neutral, PublicKeyToken=a694d7f3b0907a61, processorArchitecture=MSIL">
+      <HintPath>..\packages\EPPlus.Interfaces.8.0.0\lib\net462\EPPlus.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="ExcelNumberFormat, Version=1.1.0.0, Culture=neutral, PublicKeyToken=23c6f5d73be07eca, processorArchitecture=MSIL">
+      <HintPath>..\packages\ExcelNumberFormat.1.1.0\lib\net20\ExcelNumberFormat.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Bcl.HashCode, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.HashCode.1.1.1\lib\net461\Microsoft.Bcl.HashCode.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IO.RecyclableMemoryStream, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IO.RecyclableMemoryStream.3.0.1\lib\netstandard2.0\Microsoft.IO.RecyclableMemoryStream.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="RBush, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RBush.4.0.0\lib\net47\RBush.dll</HintPath>
+    </Reference>
+    <Reference Include="SixLabors.Fonts, Version=1.0.0.0, Culture=neutral, PublicKeyToken=d998eea7b14cab13, processorArchitecture=MSIL">
+      <HintPath>..\packages\SixLabors.Fonts.1.0.0\lib\netstandard2.0\SixLabors.Fonts.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Activities" />
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.Annotations, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ComponentModel.Annotations.5.0.0\lib\net461\System.ComponentModel.Annotations.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.IO.FileSystem.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.FileSystem.Primitives.4.0.1\lib\net46\System.IO.FileSystem.Primitives.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.Packaging, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.Packaging.4.0.0\lib\net46\System.IO.Packaging.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.7.0\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security" />
+    <Reference Include="System.Security.Cryptography.Xml, Version=8.0.0.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Xml.8.0.2\lib\net462\System.Security.Cryptography.Xml.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Forms.DataVisualization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="HelperClass\Database.cs" />
+    <Compile Include="HelperClass\FileOperationLog.cs" />
+    <Compile Include="HelperClass\GetVersion.cs" />
+    <Compile Include="HelperClass\LogMaster.cs" />
+    <Compile Include="Models\FileStructure.cs" />
+    <Compile Include="Shared\FontSize.cs" />
+    <Compile Include="Testing.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Testing.Designer.cs">
+      <DependentUpon>Testing.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\Authentication\LoginPage.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\Authentication\LoginPage.Designer.cs">
+      <DependentUpon>LoginPage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\Configure\AddMasterFiles.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\Configure\AddMasterFiles.Designer.cs">
+      <DependentUpon>AddMasterFiles.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\Configure\CreateDataToolParameter.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\Configure\CreateDataToolParameter.Designer.cs">
+      <DependentUpon>CreateDataToolParameter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HelperClass\FieldMaster.cs" />
+    <Compile Include="HelperClass\AlgoMaster.cs" />
+    <Compile Include="HelperClass\CaptureUserActivity.cs" />
+    <Compile Include="HelperClass\FileMaster.cs" />
+    <Compile Include="WinForms\Authentication\FirstTimeChangePassword.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\Authentication\FirstTimeChangePassword.Designer.cs">
+      <DependentUpon>FirstTimeChangePassword.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\Configure\MasterFileDetailedView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\Configure\MasterFileDetailedView.Designer.cs">
+      <DependentUpon>MasterFileDetailedView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\Configure\ViewMasterFiles.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\Configure\ViewMasterFiles.Designer.cs">
+      <DependentUpon>ViewMasterFiles.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\Customer\CreateCustomer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\Customer\CreateCustomer.Designer.cs">
+      <DependentUpon>CreateCustomer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\Customer\CustomerProfileList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\Customer\CustomerProfileList.Designer.cs">
+      <DependentUpon>CustomerProfileList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\Customer\setupConfigureFile.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\Customer\setupConfigureFile.Designer.cs">
+      <DependentUpon>setupConfigureFile.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\Customer\ViewCustomerProfile.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\Customer\ViewCustomerProfile.Designer.cs">
+      <DependentUpon>ViewCustomerProfile.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\Dashboard\DashboardPage.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\Dashboard\DashboardPage.Designer.cs">
+      <DependentUpon>DashboardPage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\Dashboard\DashboardSummary.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\Dashboard\DashboardSummary.Designer.cs">
+      <DependentUpon>DashboardSummary.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\GenerateTemplate\CreateOutfileHeader.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\GenerateTemplate\CreateOutfileHeader.Designer.cs">
+      <DependentUpon>CreateOutfileHeader.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\GenerateTemplate\CreateTemplateHeader.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\GenerateTemplate\CreateTemplateHeader.Designer.cs">
+      <DependentUpon>CreateTemplateHeader.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\GenerateTemplate\TemplateList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\GenerateTemplate\TemplateList.Designer.cs">
+      <DependentUpon>TemplateList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\GenerateTemplate\TemplateListView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\GenerateTemplate\TemplateListView.Designer.cs">
+      <DependentUpon>TemplateListView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\InputFile\CreateInputTemplate.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\InputFile\CreateInputTemplate.Designer.cs">
+      <DependentUpon>CreateInputTemplate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\InputFile\Create_Algo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\InputFile\Create_Algo.Designer.cs">
+      <DependentUpon>Create_Algo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\InputFile\Create_New_Algo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\InputFile\Create_New_Algo.Designer.cs">
+      <DependentUpon>Create_New_Algo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\InputFile\Input_File_Creation.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\InputFile\Input_File_Creation.Designer.cs">
+      <DependentUpon>Input_File_Creation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Circle.cs" />
+    <Compile Include="Models\CustomerProfile.cs" />
+    <Compile Include="WinForms\Dashboard\UserProfile.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\Dashboard\UserProfile.Designer.cs">
+      <DependentUpon>UserProfile.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HelperClass\VerticalTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="WinForms\Customer\AllCustomers.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\Customer\AllCustomers.Designer.cs">
+      <DependentUpon>AllCustomers.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\GenerateTemplate\ConfirmProccess.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\GenerateTemplate\ConfirmProccess.Designer.cs">
+      <DependentUpon>ConfirmProccess.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\Customer\CreateCircle.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\Customer\CreateCircle.Designer.cs">
+      <DependentUpon>CreateCircle.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\Customer\CreateCustomerProfile.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\Customer\CreateCustomerProfile.Designer.cs">
+      <DependentUpon>CreateCustomerProfile.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\GenerateTemplate\CreateTemplate.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\GenerateTemplate\CreateTemplate.Designer.cs">
+      <DependentUpon>CreateTemplate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\Dashboard\Dashboard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\Dashboard\Dashboard.Designer.cs">
+      <DependentUpon>Dashboard.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HelperClass\EncryptionandDecryption.cs" />
+    <Compile Include="WinForms\GenerateTemplate\CreateTemplateLines.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\GenerateTemplate\CreateTemplateLines.Designer.cs">
+      <DependentUpon>CreateTemplateLines.cs</DependentUpon>
+    </Compile>
+    <Compile Include="HelperClass\CommonClass.cs" />
+    <Compile Include="HelperClass\EmailService.cs" />
+    <Compile Include="HelperClass\Validation.cs" />
+    <Compile Include="Models\Circul.cs" />
+    <Compile Include="Models\CustomerDetails.cs" />
+    <Compile Include="Models\ProfileAttribute.cs" />
+    <Compile Include="WinForms\GenerateTemplate\ProcessData.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\GenerateTemplate\ProcessData.Designer.cs">
+      <DependentUpon>ProcessData.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WinForms\Authentication\ChangePassword.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\Authentication\ChangePassword.Designer.cs">
+      <DependentUpon>ChangePassword.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\Authentication\ForgotPassword.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\Authentication\ForgotPassword.Designer.cs">
+      <DependentUpon>ForgotPassword.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\Authentication\NewLogin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\Authentication\NewLogin.Designer.cs">
+      <DependentUpon>NewLogin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\Authentication\ResetPassword.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\Authentication\ResetPassword.Designer.cs">
+      <DependentUpon>ResetPassword.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\InputFile\Input_File_View.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\InputFile\Input_File_View.Designer.cs">
+      <DependentUpon>Input_File_View.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\InputFile\Input_Fix_Header.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\InputFile\Input_Fix_Header.Designer.cs">
+      <DependentUpon>Input_Fix_Header.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\OutputFile\BufferingForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\OutputFile\BufferingForm.Designer.cs">
+      <DependentUpon>BufferingForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\OutputFile\ConfigureFile.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\OutputFile\ConfigureFile.Designer.cs">
+      <DependentUpon>ConfigureFile.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\OutputFile\DataGenProcessList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\OutputFile\DataGenProcessList.Designer.cs">
+      <DependentUpon>DataGenProcessList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\OutputFile\DataGenHDIDProcessList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\OutputFile\DataGenHDIDProcessList.Designer.cs">
+      <DependentUpon>DataGenHDIDProcessList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\OutputFile\DetailedProcessList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\OutputFile\DetailedProcessList.Designer.cs">
+      <DependentUpon>DetailedProcessList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\OutputFile\OFGenerationList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\OutputFile\OFGenerationList.Designer.cs">
+      <DependentUpon>OFGenerationList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\OutputFile\OFProcessing.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\OutputFile\OFProcessing.Designer.cs">
+      <DependentUpon>OFProcessing.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\OutputFile\OFProcessing_Multi.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\OutputFile\OFProcessing_Multi.Designer.cs">
+      <DependentUpon>OFProcessing_Multi.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\OutputFile\OFSatusList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\OutputFile\OFSatusList.Designer.cs">
+      <DependentUpon>OFSatusList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\OutputFile\OPC_GEN.cs" />
+    <Compile Include="WinForms\OutputFile\SQL_Values.cs" />
+    <Compile Include="WinForms\User\AddUser.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\User\AddUser.Designer.cs">
+      <DependentUpon>AddUser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\User\Admin\ManageProfileAttribute.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\User\Admin\ManageProfileAttribute.Designer.cs">
+      <DependentUpon>ManageProfileAttribute.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\User\Admin\ProfileAttributeList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\User\Admin\ProfileAttributeList.Designer.cs">
+      <DependentUpon>ProfileAttributeList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\User\Admin\MasterFileDetailedView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\User\Admin\MasterFileDetailedView.designer.cs">
+      <DependentUpon>MasterFileDetailedView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\User\CreateRole.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\User\CreateRole.Designer.cs">
+      <DependentUpon>CreateRole.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\User\Register.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\User\Register.Designer.cs">
+      <DependentUpon>Register.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\User\UserDetails.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\User\UserDetails.Designer.cs">
+      <DependentUpon>UserDetails.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\User\UserProfile.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\User\UserProfile.Designer.cs">
+      <DependentUpon>UserProfile.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\User\VaildateUser.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\User\VaildateUser.Designer.cs">
+      <DependentUpon>VaildateUser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\User\ValidateUserDetails.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\User\ValidateUserDetails.Designer.cs">
+      <DependentUpon>ValidateUserDetails.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="Testing.resx">
+      <DependentUpon>Testing.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\Authentication\LoginPage.resx">
+      <DependentUpon>LoginPage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\Configure\AddMasterFiles.resx">
+      <DependentUpon>AddMasterFiles.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\Configure\CreateDataToolParameter.resx">
+      <DependentUpon>CreateDataToolParameter.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\Authentication\FirstTimeChangePassword.resx">
+      <DependentUpon>FirstTimeChangePassword.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\Configure\MasterFileDetailedView.resx">
+      <DependentUpon>MasterFileDetailedView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\Configure\ViewMasterFiles.resx">
+      <DependentUpon>ViewMasterFiles.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\Customer\CreateCircle.resx">
+      <DependentUpon>CreateCircle.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\Customer\CreateCustomer.resx">
+      <DependentUpon>CreateCustomer.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\Customer\CustomerProfileList.resx">
+      <DependentUpon>CustomerProfileList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\Customer\setupConfigureFile.resx">
+      <DependentUpon>setupConfigureFile.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\Customer\ViewCustomerProfile.resx">
+      <DependentUpon>ViewCustomerProfile.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\Dashboard\DashboardPage.resx">
+      <DependentUpon>DashboardPage.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\Dashboard\DashboardSummary.resx">
+      <DependentUpon>DashboardSummary.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\GenerateTemplate\CreateOutfileHeader.resx">
+      <DependentUpon>CreateOutfileHeader.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\GenerateTemplate\CreateTemplateHeader.resx">
+      <DependentUpon>CreateTemplateHeader.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\GenerateTemplate\TemplateList.resx">
+      <DependentUpon>TemplateList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\GenerateTemplate\TemplateListView.resx">
+      <DependentUpon>TemplateListView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\InputFile\CreateInputTemplate.resx">
+      <DependentUpon>CreateInputTemplate.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\InputFile\Create_Algo.resx">
+      <DependentUpon>Create_Algo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\InputFile\Create_New_Algo.resx">
+      <DependentUpon>Create_New_Algo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\InputFile\Input_File_Creation.resx">
+      <DependentUpon>Input_File_Creation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\Dashboard\UserProfile.resx">
+      <DependentUpon>UserProfile.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\Customer\AllCustomers.resx">
+      <DependentUpon>AllCustomers.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\GenerateTemplate\ConfirmProccess.resx">
+      <DependentUpon>ConfirmProccess.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\Customer\CreateCustomerProfile.resx">
+      <DependentUpon>CreateCustomerProfile.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\GenerateTemplate\CreateTemplate.resx">
+      <DependentUpon>CreateTemplate.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\Dashboard\Dashboard.resx">
+      <DependentUpon>Dashboard.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\GenerateTemplate\CreateTemplateLines.resx">
+      <DependentUpon>CreateTemplateLines.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\GenerateTemplate\ProcessData.resx">
+      <DependentUpon>ProcessData.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="WinForms\Authentication\ChangePassword.resx">
+      <DependentUpon>ChangePassword.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\Authentication\ForgotPassword.resx">
+      <DependentUpon>ForgotPassword.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\Authentication\NewLogin.resx">
+      <DependentUpon>NewLogin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\Authentication\ResetPassword.resx">
+      <DependentUpon>ResetPassword.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\InputFile\Input_File_View.resx">
+      <DependentUpon>Input_File_View.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\InputFile\Input_Fix_Header.resx">
+      <DependentUpon>Input_Fix_Header.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\OutputFile\BufferingForm.resx">
+      <DependentUpon>BufferingForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\OutputFile\ConfigureFile.resx">
+      <DependentUpon>ConfigureFile.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\OutputFile\DataGenProcessList.resx">
+      <DependentUpon>DataGenProcessList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\OutputFile\DataGenHDIDProcessList.resx">
+      <DependentUpon>DataGenHDIDProcessList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\OutputFile\DetailedProcessList.resx">
+      <DependentUpon>DetailedProcessList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\OutputFile\OFGenerationList.resx">
+      <DependentUpon>OFGenerationList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\OutputFile\OFProcessing.resx">
+      <DependentUpon>OFProcessing.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\OutputFile\OFProcessing_Multi.resx">
+      <DependentUpon>OFProcessing_Multi.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\OutputFile\OFSatusList.resx">
+      <DependentUpon>OFSatusList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\User\AddUser.resx">
+      <DependentUpon>AddUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\User\Admin\ManageProfileAttribute.resx">
+      <DependentUpon>ManageProfileAttribute.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\User\Admin\ProfileAttributeList.resx">
+      <DependentUpon>ProfileAttributeList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\User\Admin\MasterFileDetailedView.resx">
+      <DependentUpon>MasterFileDetailedView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\User\CreateRole.resx">
+      <DependentUpon>CreateRole.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\User\Register.resx">
+      <DependentUpon>Register.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\User\UserDetails.resx">
+      <DependentUpon>UserDetails.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\User\UserProfile.resx">
+      <DependentUpon>UserProfile.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\User\VaildateUser.resx">
+      <DependentUpon>VaildateUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\User\ValidateUserDetails.resx">
+      <DependentUpon>ValidateUserDetails.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\close-button-png-30241.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\login-icon-3058.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="Microsoft.Office.Core">
+      <Guid>{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}</Guid>
+      <VersionMajor>2</VersionMajor>
+      <VersionMinor>8</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="Microsoft.Office.Interop.Excel">
+      <Guid>{00020813-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>9</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="VBIDE">
+      <Guid>{0002E157-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>5</VersionMajor>
+      <VersionMinor>3</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Backup\DbChanges.txt" />
+    <Content Include="colorplast_icon.ico" />
+    <Content Include="HelperClass\mislenlaneous.txt" />
+    <None Include="Resources\undo.png" />
+    <None Include="Resources\redo.png" />
+    <None Include="Resources\minimize.png" />
+    <None Include="Resources\maximize.png" />
+    <None Include="Resources\profile1.png" />
+    <None Include="Resources\user-removebg-preview.png" />
+    <None Include="Resources\passwordIcon.png" />
+    <None Include="Resources\userIcon.png" />
+    <None Include="Resources\DGtool.jpeg" />
+    <None Include="Resources\home.png" />
+    <None Include="Resources\logout.png" />
+    <None Include="Resources\door.png" />
+    <None Include="Resources\info.png" />
+    <None Include="Resources\red-color-solid-background-1920x1080.png" />
+    <None Include="Resources\follow - small.png" />
+    <None Include="Resources\previous.png" />
+    <None Include="Resources\Preview-2-icon.png" />
+    <None Include="Resources\profile.png" />
+    <None Include="Resources\folder.png" />
+    <None Include="Resources\contact.png" />
+    <None Include="Resources\customer.png" />
+    <None Include="Resources\archive.png" />
+    <None Include="Resources\add-contact.png" />
+    <None Include="Resources\close.png" />
+    <Content Include="Resources\colorplast_logo_hd.png" />
+    <None Include="Resources\rec.png" />
+    <None Include="Resources\hide.png" />
+    <None Include="Resources\view.png" />
+    <None Include="Resources\minimize-icon-23780.png" />
+    <None Include="Resources\refresh.png" />
+    <None Include="Resources\calendar %281%29.png" />
+    <None Include="Resources\addition.png" />
+    <None Include="Resources\follow.png" />
+    <None Include="Resources\reset-password.png" />
+    <None Include="Resources\key.png" />
+    <None Include="Resources\Forgot.png" />
+    <None Include="Resources\user-green.png" />
+    <None Include="Resources\user.png" />
+    <None Include="Resources\images.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.7.2 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

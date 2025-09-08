@@ -1,0 +1,26 @@
+﻿Date:01/12/2022
+----------------------------------------------------------
+Database Changes
+-----------------
+	1. Created Table => UserDetails
+	2. Created StoredProcedure => usp_CreateUserDetails
+
+//query
+Create table UserDetails(
+Id int Identity(1,1) not null,
+EmployeeId varchar(25),
+Name Varchar(50) Not null,
+Email Varchar(50) Not Null,
+Contact Varchar(10) Not null,
+Username varchar(20) not null,
+Password Varchar(50) Not null,
+RoleId Int not null,
+
+CreatedBy Int,
+CreatedOn DateTime default getdate() not null,
+Status Int Not null,
+IsActive Int Not null,
+IsDeleted Int Not null,
+
+Primary key(Id)
+);
