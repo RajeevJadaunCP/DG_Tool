@@ -38,7 +38,7 @@ namespace DG_Tool.WinForms.Customer
             {
                 DataTable dt = new DataTable();
                 con.Open();
-                using (SqlDataAdapter sda = new SqlDataAdapter("Select * from Vw_GetCustomer", con))
+                using (SqlDataAdapter sda = new SqlDataAdapter("Select * from [Vw_GetCustomer_new]", con))
                 {
                     sda.Fill(dt);
 
@@ -127,7 +127,7 @@ namespace DG_Tool.WinForms.Customer
             using (SqlConnection con = new SqlConnection(connectionString))
             {
                 con.Open();
-                using (SqlCommand cmd = new SqlCommand("UPDATE CustomerMaster SET IsActive = CASE IsActive WHEN 1 THEN 0 ELSE 1 END WHERE CustomerID = @id", con))
+                using (SqlCommand cmd = new SqlCommand("UPDATE CustomerMaster SET IsActive = CASE IsActive WHEN 1 THEN 2 when 2 then 0 ELSE 1 END WHERE CustomerID = @id", con))
                 {
                     cmd.CommandType = CommandType.Text;
                     cmd.Parameters.AddWithValue("@id", roleID);

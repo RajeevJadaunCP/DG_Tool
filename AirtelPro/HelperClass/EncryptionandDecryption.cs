@@ -204,6 +204,50 @@ namespace CardPrintingApplication
             //}
         }
 
+
+
+        public static string AESDecrypt_file(string fileName, string password)
+        {
+            //foreach (string inputFile in inputFiles)
+            //{
+
+           
+
+
+            string encryptionKey = password;
+            string lastValue = fileName.Split('_').Last();
+            using (Aes aesAlg = Aes.Create())
+            {
+
+
+                aesAlg.Padding = PaddingMode.PKCS7;
+                aesAlg.Key = Encoding.UTF8.GetBytes(encryptionKey);
+                using (FileStream fsInput = new FileStream(fileName, FileMode.Open))
+                {
+                    // Read the IV from the beginning of the encrypted file
+                    byte[] iv = new byte[16]; // IV is 16 bytes for AES
+                    fsInput.Read(iv, 0, iv.Length);
+                    aesAlg.IV = iv;
+                    using (CryptoStream csDecrypt = new CryptoStream(fsInput, aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV), CryptoStreamMode.Read))
+                    using (FileStream fsOutput = new FileStream(fileName.Replace("_" + lastValue, "." + lastValue.Substring(0, lastValue.Length - 4)), FileMode.Create))
+                    {
+                        byte[] buffer = new byte[4096];
+                        int bytesRead;
+                        while ((bytesRead = csDecrypt.Read(buffer, 0, buffer.Length)) > 0)
+                        {
+                            fsOutput.Write(buffer, 0, bytesRead);
+                        }
+
+                       //File.Delete(fileName);
+                        return fsOutput.Name;
+                    }
+                }
+            }
+
+                
+        }
+
+
         //Implemented PGP Encryption and Decryption
         public class Pgp
         {
@@ -341,7 +385,6 @@ namespace CardPrintingApplication
             }
 
             
-
             public static void EncryptFile(
                 string outputFileName,
                 string inputFileName,

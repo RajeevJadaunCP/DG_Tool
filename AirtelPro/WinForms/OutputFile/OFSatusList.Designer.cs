@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.dgvBriefList = new System.Windows.Forms.DataGridView();
             this.pbRefresh = new System.Windows.Forms.GroupBox();
             this.pbReresh = new System.Windows.Forms.PictureBox();
@@ -49,6 +49,8 @@
             this.panel3 = new System.Windows.Forms.Panel();
             this.label7 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.cbxprofile = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgvBriefList)).BeginInit();
             this.pbRefresh.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbReresh)).BeginInit();
@@ -66,17 +68,17 @@
             this.dgvBriefList.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.dgvBriefList.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvBriefList.BackgroundColor = System.Drawing.Color.White;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvBriefList.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvBriefList.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.dgvBriefList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvBriefList.Location = new System.Drawing.Point(-190, 175);
-            this.dgvBriefList.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.dgvBriefList.Margin = new System.Windows.Forms.Padding(4);
             this.dgvBriefList.Name = "dgvBriefList";
             this.dgvBriefList.ReadOnly = true;
             this.dgvBriefList.RowHeadersVisible = false;
@@ -89,6 +91,8 @@
             // 
             this.pbRefresh.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.pbRefresh.BackColor = System.Drawing.Color.White;
+            this.pbRefresh.Controls.Add(this.label6);
+            this.pbRefresh.Controls.Add(this.cbxprofile);
             this.pbRefresh.Controls.Add(this.pbReresh);
             this.pbRefresh.Controls.Add(this.pbToCalander);
             this.pbRefresh.Controls.Add(this.txtToDate);
@@ -103,18 +107,19 @@
             this.pbRefresh.Controls.Add(this.txtFromDate);
             this.pbRefresh.Controls.Add(this.label3);
             this.pbRefresh.Location = new System.Drawing.Point(-195, 29);
-            this.pbRefresh.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pbRefresh.Margin = new System.Windows.Forms.Padding(4);
             this.pbRefresh.Name = "pbRefresh";
-            this.pbRefresh.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pbRefresh.Padding = new System.Windows.Forms.Padding(4);
             this.pbRefresh.Size = new System.Drawing.Size(1685, 91);
             this.pbRefresh.TabIndex = 5;
             this.pbRefresh.TabStop = false;
+            this.pbRefresh.Enter += new System.EventHandler(this.pbRefresh_Enter);
             // 
             // pbReresh
             // 
             this.pbReresh.Image = global::DG_Tool.Properties.Resources.refresh;
             this.pbReresh.Location = new System.Drawing.Point(1625, 30);
-            this.pbReresh.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pbReresh.Margin = new System.Windows.Forms.Padding(4);
             this.pbReresh.Name = "pbReresh";
             this.pbReresh.Size = new System.Drawing.Size(52, 39);
             this.pbReresh.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -126,7 +131,7 @@
             // 
             this.pbToCalander.Image = global::DG_Tool.Properties.Resources.calendar__1_;
             this.pbToCalander.Location = new System.Drawing.Point(1564, 53);
-            this.pbToCalander.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pbToCalander.Margin = new System.Windows.Forms.Padding(4);
             this.pbToCalander.Name = "pbToCalander";
             this.pbToCalander.Size = new System.Drawing.Size(39, 30);
             this.pbToCalander.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -138,7 +143,7 @@
             // 
             this.txtToDate.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtToDate.Location = new System.Drawing.Point(1349, 53);
-            this.txtToDate.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtToDate.Margin = new System.Windows.Forms.Padding(4);
             this.txtToDate.Name = "txtToDate";
             this.txtToDate.ReadOnly = true;
             this.txtToDate.Size = new System.Drawing.Size(201, 26);
@@ -158,7 +163,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(708, 20);
+            this.label4.Location = new System.Drawing.Point(1125, 20);
             this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(59, 16);
@@ -169,14 +174,13 @@
             // txtFilepath
             // 
             this.txtFilepath.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtFilepath.Location = new System.Drawing.Point(712, 39);
-            this.txtFilepath.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtFilepath.Location = new System.Drawing.Point(1129, 39);
+            this.txtFilepath.Margin = new System.Windows.Forms.Padding(4);
             this.txtFilepath.Name = "txtFilepath";
-            this.txtFilepath.Size = new System.Drawing.Size(300, 28);
+            this.txtFilepath.Size = new System.Drawing.Size(55, 28);
             this.txtFilepath.TabIndex = 11;
             this.txtFilepath.Visible = false;
-            this.txtFilepath.TextChanged += new System.EventHandler(this.txtFilepath_TextChanged);
-            this.txtFilepath.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtFilepath_KeyPress);
+            this.txtFilepath.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtFilepath_KeyDown);
             // 
             // label1
             // 
@@ -203,7 +207,7 @@
             this.cbxCustomer.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbxCustomer.FormattingEnabled = true;
             this.cbxCustomer.Location = new System.Drawing.Point(32, 41);
-            this.cbxCustomer.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cbxCustomer.Margin = new System.Windows.Forms.Padding(4);
             this.cbxCustomer.Name = "cbxCustomer";
             this.cbxCustomer.Size = new System.Drawing.Size(300, 32);
             this.cbxCustomer.TabIndex = 7;
@@ -214,7 +218,7 @@
             this.cbxCircle.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbxCircle.FormattingEnabled = true;
             this.cbxCircle.Location = new System.Drawing.Point(367, 39);
-            this.cbxCircle.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cbxCircle.Margin = new System.Windows.Forms.Padding(4);
             this.cbxCircle.Name = "cbxCircle";
             this.cbxCircle.Size = new System.Drawing.Size(300, 32);
             this.cbxCircle.TabIndex = 8;
@@ -224,7 +228,7 @@
             // 
             this.pbFromCalander.Image = global::DG_Tool.Properties.Resources.calendar__1_;
             this.pbFromCalander.Location = new System.Drawing.Point(1564, 20);
-            this.pbFromCalander.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pbFromCalander.Margin = new System.Windows.Forms.Padding(4);
             this.pbFromCalander.Name = "pbFromCalander";
             this.pbFromCalander.Size = new System.Drawing.Size(39, 30);
             this.pbFromCalander.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -236,7 +240,7 @@
             // 
             this.txtFromDate.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtFromDate.Location = new System.Drawing.Point(1349, 20);
-            this.txtFromDate.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtFromDate.Margin = new System.Windows.Forms.Padding(4);
             this.txtFromDate.Name = "txtFromDate";
             this.txtFromDate.ReadOnly = true;
             this.txtFromDate.Size = new System.Drawing.Size(201, 26);
@@ -279,9 +283,9 @@
             this.panel3.Controls.Add(this.label7);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel3.Location = new System.Drawing.Point(0, 0);
-            this.panel3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.panel3.Margin = new System.Windows.Forms.Padding(4);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(1711, 61);
+            this.panel3.Size = new System.Drawing.Size(1369, 48);
             this.panel3.TabIndex = 24;
             // 
             // label7
@@ -308,6 +312,27 @@
             this.label2.TabIndex = 25;
             this.label2.Text = "Search:";
             // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(690, 20);
+            this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(45, 16);
+            this.label6.TabIndex = 17;
+            this.label6.Text = "Profile";
+            // 
+            // cbxprofile
+            // 
+            this.cbxprofile.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cbxprofile.FormattingEnabled = true;
+            this.cbxprofile.Location = new System.Drawing.Point(694, 39);
+            this.cbxprofile.Margin = new System.Windows.Forms.Padding(4);
+            this.cbxprofile.Name = "cbxprofile";
+            this.cbxprofile.Size = new System.Drawing.Size(300, 32);
+            this.cbxprofile.TabIndex = 16;
+            this.cbxprofile.SelectedIndexChanged += new System.EventHandler(this.cbxprofile_SelectedIndexChanged);
+            // 
             // OFSatusList
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -321,7 +346,7 @@
             this.Controls.Add(this.pbRefresh);
             this.Controls.Add(this.dgvBriefList);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "OFSatusList";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "OFSatusList";
@@ -359,5 +384,7 @@
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.ComboBox cbxprofile;
     }
 }

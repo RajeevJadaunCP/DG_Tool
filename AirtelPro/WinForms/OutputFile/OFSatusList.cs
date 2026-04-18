@@ -31,6 +31,7 @@ namespace DG_Tool.WinForms.OutputFile
             InitializeComponent();
             var customerList = CommonClass.GetCustomer();
             var circulList = CommonClass.GetCircle(1);
+            var profilelist = CommonClass.GetCircle(1);
             if (customerList != null && customerList.Count > 0)
             {
                 customerList.Insert(0,new CustomerDetails
@@ -59,7 +60,7 @@ namespace DG_Tool.WinForms.OutputFile
 
             }
             dgvBriefList.ReadOnly = true;
-            DataGenProcessList(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
+            DataGenProcessList(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
 
             DataGridViewButtonColumn viewbutton = new DataGridViewButtonColumn();
             viewbutton.FlatStyle = FlatStyle.System;
@@ -77,7 +78,7 @@ namespace DG_Tool.WinForms.OutputFile
                 dgvBriefList.Columns.Add(viewbutton);
             }
         }
-        private void DataGenProcessList(string customerName, string circleName, string filePath, string fromDate, string toDate)
+        private void DataGenProcessList(string customerName, string circleName, string profilename , string filePath, string fromDate, string toDate)
         {
             using (SqlConnection con = new SqlConnection(connectionString))
             {
@@ -88,6 +89,7 @@ namespace DG_Tool.WinForms.OutputFile
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@customer", customerName);
                     cmd.Parameters.AddWithValue("@circle", circleName);
+                    cmd.Parameters.AddWithValue("@custprofile", profilename);
                     cmd.Parameters.AddWithValue("@filePath", filePath);
                     cmd.Parameters.AddWithValue("@fromDate", fromDate);
                     cmd.Parameters.AddWithValue("@toDate", toDate);
@@ -160,7 +162,7 @@ namespace DG_Tool.WinForms.OutputFile
 
         }
 
-        public int btnProcessAll_Click(int lastInsertedId)
+        public int All_Record_Processing(int lastInsertedId)
         {
             OFProcessing ofp=new OFProcessing();
             int records = 0;
@@ -646,7 +648,7 @@ namespace DG_Tool.WinForms.OutputFile
                     cbxCircle.ValueMember = "CircleID";
 
                 }
-                DataGenProcessList(cbxCustomer.Text, string.Empty, string.Empty, string.Empty, string.Empty);
+                DataGenProcessList(cbxCustomer.Text, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
             }
             else
             {
@@ -665,7 +667,7 @@ namespace DG_Tool.WinForms.OutputFile
                     cbxCircle.ValueMember = "CircleID";
 
                 }
-                DataGenProcessList(cbxCustomer.Text, cbxCircle.Text, string.Empty, string.Empty, string.Empty);
+                DataGenProcessList(cbxCustomer.Text, cbxCircle.Text, string.Empty, string.Empty, string.Empty, string.Empty);
             }
             
         }
@@ -674,19 +676,53 @@ namespace DG_Tool.WinForms.OutputFile
         {
             if (cbxCircle.SelectedIndex > 0 && cbxCustomer.SelectedIndex > 0)
             {
-                DataGenProcessList(cbxCustomer.Text, cbxCircle.Text, string.Empty, string.Empty, string.Empty);
+                DataGenProcessList(cbxCustomer.Text, cbxCircle.Text, string.Empty, string.Empty, string.Empty, string.Empty);
             }
             else if(cbxCircle.SelectedIndex < 0)
             {
-                DataGenProcessList(string.Empty, cbxCircle.Text, string.Empty, string.Empty, string.Empty);
+                DataGenProcessList(string.Empty, cbxCircle.Text, string.Empty, string.Empty, string.Empty, string.Empty);
+            }
+
+            if (cbxCircle.SelectedIndex > 0)
+            {
+                var customerProfile = CommonClass.GetCustomerProfileList(Convert.ToInt32(cbxCustomer.SelectedValue), Convert.ToInt32(cbxCircle.SelectedValue));
+
+                if (customerProfile != null && customerProfile.Count > 0)
+                {
+                    customerProfile.Insert(0, new CustomerProfile
+                    {
+                        ProfileID = 0,
+                        ProfileName = "----Select----"
+                    });
+                    cbxprofile.DataSource = customerProfile;
+                    cbxprofile.DisplayMember = "ProfileName";
+                    cbxprofile.ValueMember = "ProfileID";
+                }
+                else
+                {
+                    cbxprofile.DataSource = null;
+                }
             }
         }
 
-        private void txtFilepath_TextChanged(object sender, EventArgs e)
+        private void cbxprofile_SelectedIndexChanged(object sender, EventArgs e)
         {
-            DataGenProcessList(string.Empty, string.Empty, txtFilepath.Text, string.Empty, string.Empty);
+            if (cbxCircle.SelectedIndex > 0 && cbxCustomer.SelectedIndex > 0 && cbxprofile.SelectedIndex > 0)
+            {
+                DataGenProcessList(cbxCustomer.Text, cbxCircle.Text, cbxprofile.Text, string.Empty, string.Empty, string.Empty);
+            }
+            if (cbxprofile.SelectedIndex >= 0)
+            {
+                DataGenProcessList(
+                    cbxCustomer.Text,
+                    cbxCircle.Text,
+                    cbxprofile.Text,
+                    string.Empty,
+                    string.Empty,
+                    string.Empty
+                );
+            }
         }
-
         private void pbFromCalander_Click(object sender, EventArgs e)
         {
             if (toCalendar.Visible)
@@ -725,7 +761,7 @@ namespace DG_Tool.WinForms.OutputFile
                 toCalendar.Visible = false;
 
             if (!string.IsNullOrEmpty(txtFromDate.Text) && !string.IsNullOrEmpty(txtToDate.Text))
-                DataGenProcessList(string.Empty, string.Empty, string.Empty, txtFromDate.Text, txtToDate.Text);
+                DataGenProcessList(string.Empty, string.Empty, string.Empty, string.Empty, txtFromDate.Text, txtToDate.Text);
         }
 
         private void pbReresh_Click(object sender, EventArgs e)
@@ -760,7 +796,7 @@ namespace DG_Tool.WinForms.OutputFile
 
             }
             dgvBriefList.ReadOnly = true;
-            DataGenProcessList(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
+            DataGenProcessList(string.Empty, string.Empty, string.Empty, string.Empty, string.Empty, string.Empty);
 
             DataGridViewButtonColumn viewbutton = new DataGridViewButtonColumn();
             viewbutton.FlatStyle = FlatStyle.Popup;
@@ -787,12 +823,30 @@ namespace DG_Tool.WinForms.OutputFile
 
         private void txtFilepath_KeyPress(object sender, KeyPressEventArgs e)
         {
-            e.Handled = e.KeyChar != (char)Keys.Back && !char.IsLetter(e.KeyChar) && !char.IsDigit(e.KeyChar);
+
         }
 
         private void pbCancel_Click(object sender, EventArgs e)
         {
             this.Close();
         }
+
+        private void txtFilepath_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                DataGenProcessList(string.Empty, string.Empty, string.Empty, txtFilepath.Text, string.Empty, string.Empty);
+
+                e.Handled = true;
+                e.SuppressKeyPress = true; // stop beep sound
+            }
+        }
+
+        private void pbRefresh_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        
     }
 }

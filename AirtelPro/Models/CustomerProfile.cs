@@ -21,4 +21,9 @@ namespace DG_Tool.Models
         public int CustProfileFileID { get; set; }
         public string FileName { get; set; }
     }
+    public class BatchTypes
+    {
+        public string BatchType { get; set; }
+        public int BatchSize { get; set; }
+    }
 }

@@ -24,7 +24,7 @@ namespace DG_Tool.WinForms.Customer
             InitializeComponent();
             cbxCustomer.DropDownStyle = ComboBoxStyle.DropDownList;
             //GetStatus();
-            var customerList = CommonClass.GetCustomer();
+            var customerList = CommonClass.GetCustomerALL();
             if (customerList != null && customerList.Count > 0)
             {
                 cbxCustomer.DataSource = customerList;
