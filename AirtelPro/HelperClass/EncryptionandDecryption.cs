@@ -1,8 +1,11 @@
-﻿using Org.BouncyCastle.Bcpg.OpenPgp;
+﻿using CardPrintingApplication;
 using Org.BouncyCastle.Bcpg;
+using Org.BouncyCastle.Bcpg.OpenPgp;
 using Org.BouncyCastle.Security;
-using System;using CardPrintingApplication;
+using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -13,6 +16,7 @@ namespace CardPrintingApplication
 {
     internal class EncryptionandDecryption
     {
+        public static string connectionString = EncryptionandDecryption.DecryptString(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
         public static string DecryptString(string cipherText)
         {
             string EncryptionKey = "XCgMNAvzSA3q+OkIEDf+8Q==";
@@ -197,12 +201,59 @@ namespace CardPrintingApplication
 
                 }
                 out_file_name = inputFile.Replace(extn, $"_{extn.Substring(1, extn.Length - 1)}.haes");
-                File.Delete(inputFile);
+                if ((!Debugger.IsAttached) && !connectionString.Contains("192.168.5.22"))
+                {
+                    File.Delete(inputFile);
+                }
                 return out_file_name;
             }
             catch (Exception ex) { return "Error.file"; }
             //}
         }
+
+
+
+        public static string AESDecrypt_file(string fileName, string password)
+        {
+            //foreach (string inputFile in inputFiles)
+            //{
+
+           
+
+
+            string encryptionKey = password;
+            string lastValue = fileName.Split('_').Last();
+            using (Aes aesAlg = Aes.Create())
+            {
+
+
+                aesAlg.Padding = PaddingMode.PKCS7;
+                aesAlg.Key = Encoding.UTF8.GetBytes(encryptionKey);
+                using (FileStream fsInput = new FileStream(fileName, FileMode.Open))
+                {
+                    // Read the IV from the beginning of the encrypted file
+                    byte[] iv = new byte[16]; // IV is 16 bytes for AES
+                    fsInput.Read(iv, 0, iv.Length);
+                    aesAlg.IV = iv;
+                    using (CryptoStream csDecrypt = new CryptoStream(fsInput, aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV), CryptoStreamMode.Read))
+                    using (FileStream fsOutput = new FileStream(fileName.Replace("_" + lastValue, "." + lastValue.Substring(0, lastValue.Length - 4)), FileMode.Create))
+                    {
+                        byte[] buffer = new byte[4096];
+                        int bytesRead;
+                        while ((bytesRead = csDecrypt.Read(buffer, 0, buffer.Length)) > 0)
+                        {
+                            fsOutput.Write(buffer, 0, bytesRead);
+                        }
+
+                       //File.Delete(fileName);
+                        return fsOutput.Name;
+                    }
+                }
+            }
+
+                
+        }
+
 
         //Implemented PGP Encryption and Decryption
         public class Pgp
@@ -341,7 +392,6 @@ namespace CardPrintingApplication
             }
 
             
-
             public static void EncryptFile(
                 string outputFileName,
                 string inputFileName,

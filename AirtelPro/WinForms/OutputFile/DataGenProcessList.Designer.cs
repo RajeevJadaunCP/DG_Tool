@@ -169,7 +169,7 @@
             this.btnProcessAll.TabIndex = 8;
             this.btnProcessAll.Text = "Process All Records";
             this.btnProcessAll.UseVisualStyleBackColor = false;
-            this.btnProcessAll.Click += new System.EventHandler(this.btnProcessAll_Click);
+            this.btnProcessAll.Click += new System.EventHandler(this.All_Record_Processing);
             // 
             // dataGridView1
             // 

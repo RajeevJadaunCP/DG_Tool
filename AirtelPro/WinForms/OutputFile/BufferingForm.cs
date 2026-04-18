@@ -88,7 +88,7 @@ namespace DG_Tool.WinForms.OutputFile
             foreach (int Hdid in Hdids)
             {
                 LogMaster.addlog($"Reprocessing Started for {Hdid} HDID.");
-                of.btnProcessAll_Click(Hdid);
+                of.All_Record_Processing(Hdid);
                 Ghost.ReportProgress(Hdid);
                 LogMaster.addlog($"{Hdid} HDID is Reprocessed Succesfully.");
             }

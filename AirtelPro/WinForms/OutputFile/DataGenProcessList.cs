@@ -662,7 +662,7 @@ namespace DG_Tool.WinForms.OutputFile
             headerfilepath = Outputfilepath + "\\HEADER";
 
         }
-        private void btnProcessAll_Click(object sender, EventArgs e)
+        private void All_Record_Processing(object sender, EventArgs e)
         {
             // Create new stopwatch.
             Stopwatch stopwatch = new Stopwatch();

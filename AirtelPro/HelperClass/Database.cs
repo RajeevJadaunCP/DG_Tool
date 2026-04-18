@@ -14,6 +14,7 @@ namespace DG_Tool.HelperClass
 {
     class Database
     {
+        public static string connectionString = EncryptionandDecryption.DecryptString(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
         public static string sql_data_value(string query_sql, string data_name)
         {
             string sql_data_val = "";
@@ -226,6 +227,90 @@ namespace DG_Tool.HelperClass
 
             }
 
+        }
+
+
+        public static DataTable FetchDBFiles()
+        {
+            string query = @"
+            SELECT
+                dbo.DataGenProcessHD.DataGenProcessHDID AS ProcessHDID,
+                dbo.Vw_Circle.CustomerName,
+                dbo.Vw_Circle.CircleName AS Circle,
+                dbo.Vw_GetCustomerProfile.ProfileName AS Profile,
+                filename AS FileName,
+                datafilename,
+                dbo.DataGenProcessHD.FileReceivedDate,
+                dbo.DataGenProcessHD.DataGenProcessDate,
+                Status.Name AS DataGenProcessStatus,
+                dbo.DataGenProcessHD.OutFileProcessDate,
+                dbo.DataGenProcessHD.DataProcessStatusID
+            FROM dbo.DataGenProcessHD
+            LEFT JOIN dbo.Vw_Circle 
+                ON dbo.DataGenProcessHD.CircleID = dbo.Vw_Circle.CircleID
+            LEFT JOIN Vw_DataGenProcessHDFile 
+                ON Vw_DataGenProcessHDFile.DataGenProcessHDID = DataGenProcessHD.DataGenProcessHDID
+                AND (filename = 'INP' OR filename = 'TXT' OR filename = '')
+            LEFT JOIN Vw_GetCustomerProfile 
+                ON Vw_GetCustomerProfile.ProfileID = DataGenProcessHD.CustProfileID
+            LEFT JOIN Status 
+                ON Status.Id = DataGenProcessHD.StatusID
+            ORDER BY ProcessHDID DESC";
+
+            DataTable dt = new DataTable();
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlCommand cmd = new SqlCommand(query, conn))
+            using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
+            {
+                conn.Open();
+                adapter.Fill(dt);
+            }
+
+            return dt;
+        }
+
+        public static List<string> FetchFilespathbyhdid(int hdid)
+        {
+            string query = @"
+        SELECT FilePath 
+        FROM DataGenProcessHDFile 
+        WHERE DataGenProcessHDID = @HDID 
+          AND OutFlileStatus != 2 
+        ORDER BY DataGenProcessHDID DESC";
+
+            List<string> filePaths = new List<string>();
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlCommand cmd = new SqlCommand(query, conn))
+            {
+                cmd.Parameters.AddWithValue("@HDID", hdid);
+
+                conn.Open();
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        if (reader["FilePath"] != DBNull.Value)
+                            filePaths.Add(reader["FilePath"].ToString());
+                    }
+                }
+            }
+
+            return filePaths;
+        }
+
+        public static void DeleteDBFile(int hdid)
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlCommand cmd = new SqlCommand("usp_del_hdid", conn))
+            {
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@HDID", hdid);
+
+                conn.Open();
+                cmd.ExecuteNonQuery();
+            }
         }
 
 

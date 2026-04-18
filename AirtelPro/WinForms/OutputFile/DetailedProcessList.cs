@@ -168,6 +168,11 @@ namespace DG_Tool.WinForms.OutputFile
         }
         public void generate_AllTypeOutput(int lastInsertedId, string filetype, string status, string filepath)
         {
+
+            if (!Directory.Exists(Path.GetDirectoryName(filepath)))
+            {
+                Directory.CreateDirectory(filepath);
+            }
             bool IsSingle = true;
             string profile = "";
             int ProfileID = 0;
@@ -212,8 +217,8 @@ namespace DG_Tool.WinForms.OutputFile
                     //Outfilelocation = rootdir + $"\\{Customername}\\{profilename}\\{OFSatusList.LotID}_{lastInsertedId}_{unixTime}";
                     //if (!Directory.Exists(Outfilelocation))
                     //{
-                    // Directory.CreateDirectory(Outfilelocation);
-                    // }
+                    //    Directory.CreateDirectory(Outfilelocation);
+                    //}
                 }
             }
             string constr = EncryptionandDecryption.DecryptString(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
@@ -466,6 +471,11 @@ namespace DG_Tool.WinForms.OutputFile
 
                     myfile = Outfilelocation + "\\" + filenameconv + unixTime + $"_{batch}{fileext}";
                 }
+                string directory = Path.GetDirectoryName(myfile);
+                if (!Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
                 string qry = "";
                 try
                 {
@@ -538,7 +548,7 @@ namespace DG_Tool.WinForms.OutputFile
                     {
                         if (Header != "")
                         {
-                            writer.Write(Header + "\r\n");
+                            writer.Write(Header.TrimEnd() + "\r\n");
                         }
                         foreach (DataRow dr in data.Rows)
                         {
@@ -547,7 +557,7 @@ namespace DG_Tool.WinForms.OutputFile
                         }
                         if (Footer != "")
                         {
-                            writer.Write(Footer + "\r\n");
+                            writer.Write(Footer);
                         }
 
                     }
@@ -561,7 +571,7 @@ namespace DG_Tool.WinForms.OutputFile
                     {
                         if (Header != "")
                         {
-                            writer.Write(Header + "\r\n");
+                            writer.Write(Header.TrimEnd() + "\r\n");
                         }
                         foreach (DataRow dr in data.Rows)
                         {
@@ -575,25 +585,26 @@ namespace DG_Tool.WinForms.OutputFile
                     }
                 }
                 string[] lines = File.ReadAllLines(myfile);
+                
                 if (fileext.ToLower().Trim() == ".mca" && IsSingle && lines.Length > 40000)
                 {
-                    int numFiles = (lines.Length) / 20000;
+                    int numFiles = (lines.Length) / 5000;
                     for (int i = 0; i <= numFiles; i++)
                     {
                         string outputFile = myfile.Replace(fileext, $"_Part_{i + 1}{fileext}");
                         using (StreamWriter writer = File.CreateText(outputFile))
                         {
                             writer.WriteLine(lines[0]);
-                            for (int j = 1; (j <= 20000 && (j + i * 20000) <= lines.Length - 1); j++)
+                            for (int j = 1; (j <= 5000 && (j + i * 5000) <= lines.Length - 1); j++)
                             {
-                                writer.WriteLine(lines[j + i * 20000]);
+                                writer.WriteLine(lines[j + i * 5000]);
                             }
                         }
-
+                        myfile = EncryptionandDecryption.AESEncrypt_File(outputFile, OFProcessing.file_enc_key);
                     }
-                    File.Delete(myfile);
+                    //File.Delete(myfile);
                 }
-                myfile = EncryptionandDecryption.AESEncrypt_File(myfile, OFProcessing.file_enc_key);
+               // myfile = EncryptionandDecryption.AESEncrypt_File(myfile, OFProcessing.file_enc_key);
             }
 
             //using (SqlConnection con = new SqlConnection(constr))
