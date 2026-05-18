@@ -6332,7 +6332,7 @@ SELECT STRING_AGG({column_name}, ',') FROM differences;";
                                             Directory.CreateDirectory(Outfilelocation);
                                         }
                                     }
-                                        myfile = Outfilelocation + "\\" + Path.GetFileName(reader.GetString(0).Trim()).Split('.')[0] + fileext;
+                                    myfile = Outfilelocation + "\\" + Path.GetFileName(reader.GetString(0).Trim()).Split('.')[0] + fileext;
                                 }
                             }
                         }
@@ -6355,10 +6355,10 @@ SELECT STRING_AGG({column_name}, ',') FROM differences;";
 
                             if (result != null)
                             {
-                                
+
 
                                 filename_data = Path.GetFileNameWithoutExtension(result.ToString().Trim());
-                                
+
                                 if (customer_name_form.ToUpper() == "RELIANCE")
                                 {
                                     Outfilelocation = Path.Combine(Outfilelocation, filename_data.Replace("IN_", "OUT_"));
@@ -9071,7 +9071,7 @@ SELECT STRING_AGG({column_name}, ',') FROM differences;";
         //    }
         //}
     }
-        public class BatchCodeGenerator
+    public class BatchCodeGenerator
     {
         private string _lastPrefix = "";
         private char _letter = 'A';
