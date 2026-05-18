@@ -343,17 +343,17 @@ namespace DG_Tool.WinForms.OutputFile
             customer_name_form = cbxCustomer.Text;
 
             if (cbxCustomer.SelectedIndex > 0 && cbxCircle.SelectedIndex > 0 && cbxProfile.SelectedIndex > 0)
-            {
-                txtInputfile.Text = "";
-                InsertedHDIDS.Clear();
-                logString.Append($"\n1. User initiated the data processing tool and selected the following input:-\n    Customer : {cbxCustomer.Text}\n    Circle : {cbxCircle.Text}\n    Profile : {cbxProfile.Text}\n");
-                Console.WriteLine($"\n1. User initiated the data processing tool and selected the following input:-\n    Customer : {cbxCustomer.Text}\n    Circle : {cbxCircle.Text}\n    Profile : {cbxProfile.Text}\n");
-                string filepath = string.Empty;
-                OpenFileDialog openFileDialog = new OpenFileDialog();
-                openFileDialog.Multiselect = true;
-                openFileDialog.Title = "Select Multiple Files";
-                openFileDialog.Filter = "All Files (*.*)|*.*";
-                DialogResult result = openFileDialog.ShowDialog();
+                {
+                    txtInputfile.Text = "";
+                    InsertedHDIDS.Clear();
+                    logString.Append($"\n1. User initiated the data processing tool and selected the following input:-\n    Customer : {cbxCustomer.Text}\n    Circle : {cbxCircle.Text}\n    Profile : {cbxProfile.Text}\n");
+                    Console.WriteLine($"\n1. User initiated the data processing tool and selected the following input:-\n    Customer : {cbxCustomer.Text}\n    Circle : {cbxCircle.Text}\n    Profile : {cbxProfile.Text}\n");
+                    string filepath = string.Empty;
+                    OpenFileDialog openFileDialog = new OpenFileDialog();
+                    openFileDialog.Multiselect = true;
+                    openFileDialog.Title = "Select Multiple Files";
+                    openFileDialog.Filter = "All Files (*.*)|*.*";
+                    DialogResult result = openFileDialog.ShowDialog();
                 if (result == DialogResult.OK)
                 {
 
@@ -6342,6 +6342,28 @@ SELECT STRING_AGG({column_name}, ',') FROM differences;";
                         string filename_data = string.Empty;
 
                         // safer split
+                        string[] datafilename_data = string.IsNullOrWhiteSpace(filenameconv)? Array.Empty<string>(): filenameconv.Trim().Split(new[] { '_' }, StringSplitOptions.RemoveEmptyEntries);
+                        // fetch value using ExecuteScalar (faster than reader for single value)
+                        using (SqlConnection connection = new SqlConnection(connectionString))
+                        using (SqlCommand command = new SqlCommand(@"SELECT TOP 1 t2.FilePath FROM CustProfileFile t1 INNER JOIN DataGenProcessHDFile t2 ON t1.CustProfileFileID = t2.CustProfileFileID WHERE t1.FileIOID = 'I' AND t2.DataGenProcessHDID = @id", connection))
+                        {
+                            command.Parameters.AddWithValue("@id", lastInsertedId);
+
+                            connection.Open();
+
+                            var result = command.ExecuteScalar();
+
+                            if (result != null)
+                            {
+                                filename_data = Path.GetFileNameWithoutExtension(result.ToString().Trim());
+                            }
+                        }
+                    }
+                    else if (filenameconv.Trim().Contains("FROMFILE_"))
+                    {
+                        string filename_data = string.Empty;
+
+                        // safer split
                         string[] datafilename_data = string.IsNullOrWhiteSpace(filenameconv) ? Array.Empty<string>() : filenameconv.Trim().Split(new[] { '_' }, StringSplitOptions.RemoveEmptyEntries);
                         // fetch value using ExecuteScalar (faster than reader for single value)
                         using (SqlConnection connection = new SqlConnection(connectionString))
@@ -7227,7 +7249,7 @@ SELECT STRING_AGG({column_name}, ',') FROM differences;";
         }
 
 
-        public static DataTable ConvertCsvToDataTable(string csvFilePath)
+       public static DataTable ConvertCsvToDataTable(string csvFilePath)
         {
             DataTable dt = new DataTable();
             using (StreamReader sr = new StreamReader(csvFilePath))
@@ -8361,6 +8383,17 @@ SELECT STRING_AGG({column_name}, ',') FROM differences;";
         //                            }
         //                        }
 
+                            for (int i = 0; i < file_qty; i++)
+                            {
+                                datalist.Add(StringToHex(value.ToString()));
+                                value++;
+                            }
+                        }
+                        else
+                        {
+                            for (int i = 0; i < file_qty; i++)
+                            {
+                                string lineText = lines[line + i - 1];
 
         //                    }
         //                }
@@ -8548,6 +8581,9 @@ SELECT STRING_AGG({column_name}, ',') FROM differences;";
         //                    {
         //                        qry += str_varname;
         //                    }
+            //string query_remove_junk_data = @"
+            //    DELETE FROM [DataGenProcessData] 
+            //    WHERE DataGenProcessHDID IN (SELECT [DataGenProcessHDID] FROM [dbo].[DataGenProcessHDFile] WHERE [FileName] LIKE '%mca.haes%' AND [OutFlileStatus] NOT IN (6, 17));
 
         //                    else if (str_VarType == "T")
         //                    {
@@ -9031,6 +9067,18 @@ SELECT STRING_AGG({column_name}, ',') FROM differences;";
         //            {
         //                myfile = EncryptionandDecryption.AESEncrypt_File(myfile, OFProcessing.file_enc_key);
 
+                        else if (str_VarType == "S")
+                        {
+                            using (SqlConnection con1 = new SqlConnection(connectionString))
+                            {
+                                SqlCommand com1 = new SqlCommand("select trim(Seperator) from [dbo].[SeperatorMaster] where SepID ='" + str_varname + "'", con1);
+                                con1.Open();
+                                SqlDataReader sqlDataReader = com1.ExecuteReader();
+                                while (sqlDataReader.Read())
+                                {
+                                    string str = sqlDataReader.GetString(0);
+                                    if (string.IsNullOrEmpty(str))
+                                    { str = " "; }
 
         //                //myfile = EncryptionandDecryption.AESEncrypt_File(myfile, file_enc_key);
         //                logString.Append($"    - Filename : {Path.GetFileName(myfile)}\n");
@@ -9125,6 +9173,22 @@ SELECT STRING_AGG({column_name}, ',') FROM differences;";
             }
 
             _batchCounter++;
+                                        using (StreamWriter writer = new StreamWriter(fs))
+                                        {
+                                            writer.WriteLine(lines[0]);
+                                            for (int j = 1; (j <= mca_batchsize && (j + i * mca_batchsize) <= lines.Length - 1); j++)
+                                            {
+                                                writer.WriteLine(lines[j + i * mca_batchsize]);
+                                            }
+                                        }
+                                    }
+                                    outputFile = (profilename == "EUICC") ? outputFile : EncryptionandDecryption.AESEncrypt_File(outputFile, OFProcessing.file_enc_key); ;
+                                    if (File.Exists(outputFile))
+                                    {
+                                        File.SetAttributes(outputFile, FileAttributes.Normal); // make encrypted file visible
+                                    }
+                                    logString.Append($"    - Filename : {Path.GetFileName(outputFile)}\n");
+                                    logString.Append($"    - No of record : {mca_batchsize}\n");
 
             return $"{prefix}{_letter}{_number:D3}";
         }
