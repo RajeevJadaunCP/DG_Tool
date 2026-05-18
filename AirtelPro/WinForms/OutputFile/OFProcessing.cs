@@ -9108,7 +9108,7 @@ SELECT STRING_AGG({column_name}, ',') FROM differences;";
             if (prefix != _lastPrefix)
             {
                 _letter = 'A';
-                _number = 1;
+                _number = 0;
                 _batchCounter = 0;
                 _lastPrefix = prefix;
             }
@@ -9120,7 +9120,7 @@ SELECT STRING_AGG({column_name}, ',') FROM differences;";
                 if (_number > 999)
                 {
                     _letter++;
-                    _number = 1;
+                    _number = 0;
                 }
             }
 

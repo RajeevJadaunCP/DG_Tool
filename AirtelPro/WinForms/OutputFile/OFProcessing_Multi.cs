@@ -21,8 +21,12 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+/*
+ * 180526 : file count mismatch error handling added in both merge methods, log upload after processing in both merge methods, batch file splitting and encryption of splitted files in merge 2 method, dynamic merge method added for taisys customer in merge 3 method, log string builder cleared at the end of merge 2 method.
+*/
 namespace DG_Tool.WinForms.OutputFile
 {
+    
     public partial class OFProcessing_Multi : Form
     {
         public int batchsize = 0;
@@ -461,6 +465,19 @@ namespace DG_Tool.WinForms.OutputFile
 
                 var secondaryLines = File.ReadAllLines(secondaryPath);
 
+                int primaryCount = File.ReadLines(primaryPath).Count();
+                int secondaryCount = File.ReadLines(secondaryPath).Count();
+
+                if (primaryCount != secondaryCount)
+                {
+                    MessageBox.Show($"Line count mismatch. Primary file {primaryPath}: {primaryCount}, Secondary file {secondaryPath}: {secondaryCount}");
+                    //deleting all files after reading
+                    File.Delete(primaryPath);
+                    File.Delete(secondaryPath);
+                    return;
+                }
+
+
                 if (primaryLines.Length > 0 &&    primaryLines[0].ToUpper().Contains("ASCII_ICCID"))
                 {
                     primaryColumns = "ICCID,PIN1,PIN2,PUK1,PUK2,ADM1,KIC1,KID1,KIK1,PSK,DEK1,ASCII_ICCID,LICENSE_KEY#";
@@ -630,6 +647,21 @@ namespace DG_Tool.WinForms.OutputFile
 
                 var secondaryLines = File.ReadAllLines(secondaryPath);
                 var thirdfileLines = File.ReadAllLines(thirdfilePath);
+
+                int primaryCount = File.ReadLines(primaryPath).Count();
+                int secondaryCount = File.ReadLines(secondaryPath).Count();
+                int thirdCount = File.ReadLines(thirdfilePath).Count();
+
+                if (primaryCount != secondaryCount || primaryCount != thirdCount)
+                {
+                    MessageBox.Show($"Line count mismatch. Primary file {primaryPath}: {primaryCount}, Secondary file {secondaryPath}: {secondaryCount} , Third file {thirdfilePath}: {thirdCount} ");
+                    //deleting all files after reading
+                    File.Delete(primaryPath);
+                    File.Delete(secondaryPath);
+                    File.Delete(thirdfilePath);
+                    return;
+                }
+
 
                 //////deleting all files qafter reading
                 //if (customer.ToUpper() != "TAISYS")
