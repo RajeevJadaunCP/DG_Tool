@@ -4,6 +4,7 @@ using DG_Tool.HelperClass;
 using DG_Tool.Models;
 using DG_Tool.WinForms.Authentication;
 using DocumentFormat.OpenXml.InkML;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -20,9 +21,16 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Net.WebRequestMethods;
+using File = System.IO.File;
+using LicenseContext = OfficeOpenXml.LicenseContext;
 
+/*
+ * 180526 : file count mismatch error handling added in both merge methods, log upload after processing in both merge methods, batch file splitting and encryption of splitted files in merge 2 method, dynamic merge method added for taisys customer in merge 3 method, log string builder cleared at the end of merge 2 method.
+*/
 namespace DG_Tool.WinForms.OutputFile
 {
+    
     public partial class OFProcessing_Multi : Form
     {
         public int batchsize = 0;
@@ -89,7 +97,7 @@ namespace DG_Tool.WinForms.OutputFile
         private Panel bufferingPanel;
         public static string hsm_IP = Database.sql_data_value("SELECT KeyValue FROM [DataTool_Keys] where[KeyName] = 'HSM_IP' ", "KeyValue");
         public static string file_enc_key = Database.sql_data_value("SELECT KeyValue FROM [dbo].[DataTool_Keys] where[KeyName] = 'File_Enc'", "KeyValue");
-        public static string customer = string.Empty;
+        public static string customer = string.Empty , customer1 = string.Empty , customer2 = string.Empty , customer3 = string.Empty;
         public static string circle = string.Empty;
         public static string profile = string.Empty;
         public static string inputFile = string.Empty;
@@ -148,7 +156,7 @@ namespace DG_Tool.WinForms.OutputFile
             else if (requiredTag.ToUpper() == "AIR")
             {
                 fileName = Path.GetFileName(filePath).ToUpper();
-                requiredTag = "BHA";
+                requiredTag = "BH";
             }
             else
             {
@@ -179,7 +187,7 @@ namespace DG_Tool.WinForms.OutputFile
         private void btnInputFile_Click(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Multiselect = false; // allow only one file
+            openFileDialog.Multiselect = true; // allow only one file
             openFileDialog.Title = "Select a File";
             openFileDialog.Filter = "Haes Files (*.haes)|*.haes";
 
@@ -187,7 +195,7 @@ namespace DG_Tool.WinForms.OutputFile
             {
                 if (!ValidateSelectedFile(openFileDialog.FileName, 0)) return;
                 // assuming you have a TextBox named txtFile1
-                txtInputfile.Text = openFileDialog.FileName;
+                txtInputfile.Text = string.Join(", ", openFileDialog.FileNames);
             }
             
         }
@@ -195,7 +203,7 @@ namespace DG_Tool.WinForms.OutputFile
         private void btnInputFile2_Click(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Multiselect = false; // allow only one file
+            openFileDialog.Multiselect = true; // allow only one file
             openFileDialog.Title = "Select a File";
             openFileDialog.Filter = "Haes Files (*.haes)|*.haes";
 
@@ -203,7 +211,7 @@ namespace DG_Tool.WinForms.OutputFile
             {
                 if (!ValidateSelectedFile(openFileDialog.FileName, 1)) return;
                 // assuming you have a TextBox named txtFile2
-                txtInputfile2.Text = openFileDialog.FileName;
+                txtInputfile2.Text = string.Join(", ", openFileDialog.FileNames);
             }
             
         }
@@ -211,7 +219,7 @@ namespace DG_Tool.WinForms.OutputFile
         private void btnInputFile3_Click(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Multiselect = false; // allow only one file
+            openFileDialog.Multiselect = true; // allow only one file
             openFileDialog.Title = "Select a File";
             openFileDialog.Filter = "Haes Files (*.haes)|*.haes";
 
@@ -219,7 +227,7 @@ namespace DG_Tool.WinForms.OutputFile
             {
                 if (!ValidateSelectedFile(openFileDialog.FileName, 2)) return;
                 // assuming you have a TextBox named txtFile2
-                txtInputfile3.Text = openFileDialog.FileName;
+                txtInputfile3.Text = string.Join(", ", openFileDialog.FileNames);
             }
             
         }
@@ -285,29 +293,97 @@ namespace DG_Tool.WinForms.OutputFile
             string input = InputBox.Show("Enter batch size (leave blank for 0):", "Batch Size", "0");
 
             batchsize = 0; // default = 0
-            if (int.TryParse(input, out int result))
+            if (!int.TryParse(input, out batchsize))
             {
-                batchsize = result;
+                MessageBox.Show("Please enter the batchsize in numeric.", "Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
             }
-            else
-            {
-                MessageBox.Show($"Please enter the batchsize in numeric.",
-                                              "Message",
-                                              MessageBoxButtons.OK,
-                                              MessageBoxIcon.Information
-                                              );
+            ////for multiple file selection, we will process and merge files in the background worker.So, we will not call startProcessing_1() here.Instead, we will call startProcessing() which handles the decryption and merging of files.
+            startProcessing_1();
 
+
+            ////for single input file processing, we will call startProcessing() which handles the decryption and merging of files.
+            //startProcessing(); 
+
+
+
+
+            panel1.Visible = true;
+            backgroundWorker1.RunWorkerAsync();
+        
+        }
+
+        public void startProcessing_1()
+        {
+
+            // 1. Gather UI Inputs
+            string rawInputFile1 = txtInputfile.Text.Trim();
+            string rawInputFile2 = txtInputfile2.Text.Trim();
+            string rawInputFile3 = txtInputfile3.Text.Trim();
+            customer = cbxCustomer.Text.Trim();
+            
+            profile = cbxProfile.Text.Trim();
+            var customer_name = profile.Split('_');
+            
+            // 2. Pre-checks: Validate fields and mandatory files are present
+            if (string.IsNullOrEmpty(rawInputFile1) || string.IsNullOrEmpty(rawInputFile2))
+            {
+                MessageBox.Show("Please select all required mca files before submitting.", "Missing File", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
+            if (string.IsNullOrEmpty(profile) || string.IsNullOrEmpty(customer))
+            {
+                MessageBox.Show("Please Enter all fields before submitting.", "Missing fields", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
 
+            // 3. Set Context Values
+            customerID = Convert.ToInt32(cbxCustomer.SelectedValue);
+            ProfileID = Convert.ToInt32(cbxProfile.SelectedValue);
+            timestamp = DateTime.UtcNow.ToString("ddMMyyyyHHmmss");
+            flag_merger = 2; // Default to 2 streams
+
+            // 4. Logging setup
+            logString.Append($"\n1. User selected input 1 :-{string.Join(Environment.NewLine, rawInputFile1.Split(','))}\n");
+            logString.Append($"\n1. User selected input 2 :-{string.Join(Environment.NewLine, rawInputFile2.Split(','))}\n");
+
+
+
+            // 5. Decrypt and automatically Merge if multi-file inputs exist
+            inputFile = ProcessAndMergeFiles(rawInputFile1, "Input1");
+            inputFile2 = ProcessAndMergeFiles(rawInputFile2, "Input2");
+
+            // Handle optional File 3 safely
+            if (!string.IsNullOrEmpty(rawInputFile3))
+            {
+                inputFile3 = ProcessAndMergeFiles(rawInputFile3, "Input3");
+                logString.Append($"\n1. User selected input 3 :-{string.Join(Environment.NewLine, rawInputFile3.Split(','))}\n");
+
+                customer1 = customer_name[2];
+                customer2 = customer_name[3];
+                customer3 = customer_name[4];
+                flag_merger = 3;
+            }
+            else
+            {
+                customer1 = customer_name[2];
+                customer2 = customer_name[3];
+                customer3 = "";
+                inputFile3 = "";
+            }
+
+            // Final Log & UI Update
+            logString.Append($"\n1. User initiated the file processing tool and selected the following input:-\n    Customer : {customer}\n    Profile : {profile}\n");
+        }
+
+        public void startProcessing()
+        {
             customerID = Convert.ToInt32(cbxCustomer.SelectedValue);
             flag_merger = 2;
             ProfileID = Convert.ToInt32(cbxProfile.SelectedValue);
 
             timestamp = DateTime.UtcNow.ToString("ddMMyyyyHHmmss");
-            logString.Append($"\n1. User selected input 1 :-{txtInputfile.Text}\n");
-            logString.Append($"\n1. User selected input 2 :-{txtInputfile2.Text}\n");
            
             // Get inputs
             inputFile = txtInputfile.Text.Trim();
@@ -315,56 +391,128 @@ namespace DG_Tool.WinForms.OutputFile
             inputFile3 = txtInputfile3.Text.Trim();
             customer = cbxCustomer.Text.Trim();
             profile = cbxProfile.Text.Trim();
-            
+
             // ✅ Pre-check: Ensure files are not empty / missing
-            if (string.IsNullOrEmpty(inputFile) ||
-                string.IsNullOrEmpty(inputFile2) )
+            if (string.IsNullOrEmpty(inputFile) ||string.IsNullOrEmpty(inputFile2))
             {
                 MessageBox.Show("Please select all required mca files before submitting.",
                                 "Missing File", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
+            else 
+            {
+                inputFile = EncryptionandDecryption.AESDecrypt_file(inputFile, OFProcessing.file_enc_key);
+                inputFile2 = EncryptionandDecryption.AESDecrypt_file(inputFile2, OFProcessing.file_enc_key);
+            }
+            logString.Append($"\n1. User selected input 1 :-{txtInputfile.Text}\n");
+            logString.Append($"\n1. User selected input 2 :-{txtInputfile2.Text}\n");
 
             if (string.IsNullOrEmpty(profile) ||
-                string.IsNullOrEmpty(customer) )
+                string.IsNullOrEmpty(customer))
             {
                 MessageBox.Show("Please Enter all fields before submitting.",
                                 "Missing fields", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            
-            inputFile = EncryptionandDecryption.AESDecrypt_file(inputFile, OFProcessing.file_enc_key);
-            if (string.IsNullOrEmpty(inputFile))
-            {
-                return;
-            }
-            inputFile2 =  EncryptionandDecryption.AESDecrypt_file(inputFile2, OFProcessing.file_enc_key);
-            if (string.IsNullOrEmpty(inputFile2))
-            {
-                return;
-            }
+            //if (!string.IsNullOrEmpty(inputFile))
+            //{
+            //    inputFile = EncryptionandDecryption.AESDecrypt_file(inputFile, OFProcessing.file_enc_key) + ",";
+            //}
+
+
+            //if (!string.IsNullOrEmpty(inputFile2))
+            //{
+            //    inputFile2 = EncryptionandDecryption.AESDecrypt_file(inputFile2, OFProcessing.file_enc_key) + ",";
+            //}
+
+
+            //if (string.IsNullOrEmpty(inputFile) || string.IsNullOrEmpty(inputFile2) || string.IsNullOrEmpty(inputFile3))
+            //{
+            //    return;
+            //}
+
+
             if (!string.IsNullOrEmpty(inputFile3))
             {
                 inputFile3 = EncryptionandDecryption.AESDecrypt_file(inputFile3, OFProcessing.file_enc_key);
                 logString.Append($"\n1. User selected input 3 :-{txtInputfile3.Text}\n");
-                
                 flag_merger = 3;
-                if (string.IsNullOrEmpty(inputFile3))
+            }
+        
+            
+
+            logString.Append($"\n1. User initiated the file processing tool and selected the following input:-\n    Customer : {cbxCustomer.Text}\n    Profile : {cbxProfile.Text}\n");
+        }
+
+        // Helper method to process, sort, decrypt, and conditionally merge files
+        private string ProcessAndMergeFiles(string commaSeparatedFiles, string identifier)
+        {
+            // Split and filter empty items
+            var fileList = commaSeparatedFiles
+                .Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(f => f.Trim())
+                .OrderBy(f => Path.GetFileName(f))
+                .ToList();
+
+            if (fileList.Count == 0) return string.Empty;
+
+            int headerflag = 0;
+
+            // Sort files by their filename in ascending order
+            var sortedFiles = fileList.OrderBy(f => Path.GetFileName(f)).ToList();
+
+            // Decrypt all files in sorted order
+            var decryptedFilePaths = sortedFiles
+                .Select(file => EncryptionandDecryption.AESDecrypt_file(file, OFProcessing.file_enc_key))
+                .ToList();
+
+            // If there's only 1 file, no merging is required. Just return it with a trailing comma.
+            if (decryptedFilePaths.Count == 1)
+            {
+                return decryptedFilePaths[0] ;
+            }
+
+            // If multiple files exist, merge their contents into a single file
+            string directory = Path.GetDirectoryName(decryptedFilePaths[0]) ?? Path.GetTempPath();
+            string mergedFileName = $"Merged_{identifier}_{DateTime.Now:yyyyMMddHHmmss}.txt";
+            string mergedFilePath = Path.Combine(directory, mergedFileName);
+
+            using (var outputStream = File.Create(mergedFilePath))
+            using (var writer = new StreamWriter(outputStream))
+            {
+                foreach (var filePath in decryptedFilePaths)
                 {
-                    
-                    return;
-                    
+                    if (File.Exists(filePath))
+                    {
+                        var lines = File.ReadLines(filePath);
+
+                        if (headerflag == 0)
+                        {
+                            // First file: write everything including header
+                            foreach (var line in lines)
+                            {
+                                writer.WriteLine(line);
+                            }
+
+                            headerflag = 1;
+                        }
+                        else
+                        {
+                            // Remaining files: skip header
+                            foreach (var line in lines.Skip(1))
+                            {
+                                writer.WriteLine(line);
+                            }
+                        }
+                        File.Delete(filePath);
+                    }
                 }
             }
 
-            logString.Append($"\n1. User initiated the file processing tool and selected the following input:-\n    Customer : {cbxCustomer.Text}\n    Profile : {cbxProfile.Text}\n");
-            panel1.Visible = true;
-            backgroundWorker1.RunWorkerAsync();
-        
+            // Return the single merged file path wrapped with a trailing comma to match downstream code expected formats
+            return mergedFilePath ;
         }
-
-
 
         private void BackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
         {
@@ -373,24 +521,27 @@ namespace DG_Tool.WinForms.OutputFile
                 if (flag_merger == 2)
                 {
                     mergemca_2(inputFile, inputFile2);
+                    mergemca_dynamic2(inputFile, inputFile2,  $"{customer1}_ICCID,{customer1}_IMSI,{customer2}_ICCID,{customer2}_IMSI", "csv");
+                 
                     upload_log();
+                    
                 }
                 else if (flag_merger == 3)
                 {
                     mergemca_3(inputFile, inputFile2, inputFile3);
                     if (customer.ToUpper() == "TAISYS")
                     {
-                        mergemca_dynamic(inputFile, inputFile2, inputFile3, "AIRTEL_IMSI,AIRTEL_ICCID,BSNL_IMSI,BSNL_ICCID,VI_IMSI,VI_ICCID,KIC1,KID1,KIK1", "OTA");
-                        mergemca_dynamic(inputFile, inputFile2, inputFile3, "AIRTEL_ICCID,AIRTEL_IMSI,BSNL_ICCID,BSNL_IMSI,VI_ICCID,VI_IMSI", "txt");
-                        //File.Delete(inputFile);
-                        //File.Delete(inputFile2);
-                        //File.Delete(inputFile3);
+                        mergemca_dynamic(inputFile, inputFile2, inputFile3, "AIRTEL_IMSI,AIRTEL_ICCID,BSNL_IMSI,BSNL_ICCID,VIL_IMSI,VIL_ICCID,KIC1,KID1,KIK1", "OTA");
+                        mergemca_dynamic(inputFile, inputFile2, inputFile3, "AIRTEL_ICCID,AIRTEL_IMSI,BSNL_ICCID,BSNL_IMSI,VIL_ICCID,VIL_IMSI", "txt");
+                       
                     }
+                    mergemca_dynamic(inputFile, inputFile2, inputFile3, $"{customer1}_ICCID,{customer1}_IMSI,{customer2}_ICCID,{customer2}_IMSI,{customer3}_ICCID,{customer3}_IMSI", "csv");
                     File.Delete(inputFile);
                     File.Delete(inputFile2);
                     File.Delete(inputFile3);
 
                     upload_log();
+                    
                 }
                 //this.Invoke(new MethodInvoker(delegate
                 //{
@@ -401,6 +552,8 @@ namespace DG_Tool.WinForms.OutputFile
             {
                 e.Result = ex;
             }
+
+            logString.Clear();
 
         }
         public static string Decrypt(string fileName)
@@ -461,18 +614,28 @@ namespace DG_Tool.WinForms.OutputFile
 
                 var secondaryLines = File.ReadAllLines(secondaryPath);
 
+                int primaryCount = File.ReadLines(primaryPath).Count();
+                int secondaryCount = File.ReadLines(secondaryPath).Count();
+
+                if (primaryCount != secondaryCount)
+                {
+                    MessageBox.Show($"Line count mismatch. Primary file {primaryPath}: {primaryCount}, Secondary file {secondaryPath}: {secondaryCount}");
+                    //deleting all files after reading
+                    File.Delete(primaryPath);
+                    File.Delete(secondaryPath);
+                    return;
+                }
+
+
                 if (primaryLines.Length > 0 &&    primaryLines[0].ToUpper().Contains("ASCII_ICCID"))
                 {
                     primaryColumns = "ICCID,PIN1,PIN2,PUK1,PUK2,ADM1,KIC1,KID1,KIK1,PSK,DEK1,ASCII_ICCID,LICENSE_KEY#";
                 }
-                //deleting all files after reading
-                File.Delete(primaryPath);
-                File.Delete(secondaryPath);
+                ////deleting all files after reading
+                //File.Delete(primaryPath);
+                //File.Delete(secondaryPath);
                
-                var beforeICCID = primaryLines[0].Split(
-    new string[] { "ICCID" },
-    StringSplitOptions.None
-)[0];
+                var beforeICCID = primaryLines[0].Split(new string[] { "ICCID" },StringSplitOptions.None)[0];
                 primaryColumns = beforeICCID + primaryColumns;
                 //var primaryHeader = primaryLines[0].Split(',').Select(c => c.Trim()).ToList();
                 //var secondaryHeader = secondaryLines[0].Split(',').Select(c => c.Trim()).ToList();
@@ -605,7 +768,7 @@ namespace DG_Tool.WinForms.OutputFile
                 //return;
             }
 
-            logString.Clear();
+            //logString.Clear();
         }
 
         //(AllCustomers thre input file necessary)
@@ -631,6 +794,21 @@ namespace DG_Tool.WinForms.OutputFile
                 var secondaryLines = File.ReadAllLines(secondaryPath);
                 var thirdfileLines = File.ReadAllLines(thirdfilePath);
 
+                int primaryCount = File.ReadLines(primaryPath).Count();
+                int secondaryCount = File.ReadLines(secondaryPath).Count();
+                int thirdCount = File.ReadLines(thirdfilePath).Count();
+
+                if (primaryCount != secondaryCount || primaryCount != thirdCount)
+                {
+                    MessageBox.Show($"Line count mismatch. Primary file {primaryPath}: {primaryCount}, Secondary file {secondaryPath}: {secondaryCount} , Third file {thirdfilePath}: {thirdCount} ");
+                    //deleting all files after reading
+                    File.Delete(primaryPath);
+                    File.Delete(secondaryPath);
+                    File.Delete(thirdfilePath);
+                    return;
+                }
+
+
                 //////deleting all files qafter reading
                 //if (customer.ToUpper() != "TAISYS")
                 //{
@@ -641,10 +819,7 @@ namespace DG_Tool.WinForms.OutputFile
                 //}
 
 
-                var beforeICCID = primaryLines[0].Split(
-new string[] { "ICCID" },
-StringSplitOptions.None
-)[0];
+                var beforeICCID = primaryLines[0].Split(new string[] { "ICCID" },StringSplitOptions.None)[0];
                 primaryColumns = beforeICCID + primaryColumns;
                 var primaryHeader = primaryLines[0].Split(',').Select(c => c.Trim()).ToList();
                 var secondaryHeader = secondaryLines[0].Split(',').Select(c => c.Trim()).ToList();
@@ -758,8 +933,8 @@ StringSplitOptions.None
                     }
                 }
 
-               
-               
+
+
                 logString.Append($"\nFile encrypted Succesfully Filename : {outputPath}\n");
                 logString.Append($"\n**************************************[Logging Out] File Processing Tool is closing [{DateTime.Now}] **************************************\n");
                
@@ -775,7 +950,7 @@ StringSplitOptions.None
                 //return;
             }
 
-            logString.Clear();
+            //logString.Clear();
         }
 
 
@@ -853,6 +1028,9 @@ StringSplitOptions.None
                 { outputLines.Add("AIRTEL ICCID;AIRTEL IMSI;BSNL ICCID;BSNL IMSI;VI ICCID;VI IMSI"); }
 
 
+                else if (extension == "csv")
+                { outputLines.Add(headerTemplatePath); }
+
 
                 for (int i = 1; i < primaryLines.Length; i++)
                 {
@@ -881,21 +1059,21 @@ StringSplitOptions.None
                         string value = "";
 
                         // AIRTEL → primary file
-                        if (operatorName == "AIRTEL")
+                        if (operatorName.Contains(customer1))
                         {
                             int idx = primaryHeader.IndexOf(fieldName);
                             if (idx >= 0 && p.Length > idx)
                                 value = p[idx];
                         }
                         // BSNL → secondary file
-                        else if (operatorName == "BSNL")
+                        else if (operatorName.Contains(customer2))
                         {
                             int idx = secondaryHeader.IndexOf(fieldName);
                             if (idx >= 0 && s.Length > idx)
                                 value = s[idx];
                         }
                         // VI → third file
-                        else if (operatorName == "VI")
+                        else if (operatorName.Contains(customer3))
                         {
                             int idx = thirdHeader.IndexOf(fieldName);
                             if (idx >= 0 && t.Length > idx)
@@ -925,6 +1103,10 @@ StringSplitOptions.None
                     {
                         outputLines.Add(string.Join(";", line));
                     }
+                    else
+                    {
+                        outputLines.Add(string.Join(",", line));
+                    }
                 }
 
                     var folderPath = "";
@@ -941,13 +1123,166 @@ StringSplitOptions.None
 
                 Directory.CreateDirectory(folderPath);
 
-                var outputPath = Path.Combine(
-                    folderPath,
-                    $"AAirtel+BSNL+VI_Mapping_{timestamp}.{extension}"
-                );
+                var outputPath = Path.Combine(folderPath,$"Airtel+BSNL+VI_Mapping_{timestamp}.{extension}");
+
+
+                
+                //File.WriteAllLines(outputPath, outputLines);
+                File.WriteAllText(outputPath, string.Join(Environment.NewLine, outputLines));
+                if (extension == "csv")
+                {
+                    string csvfile = outputPath;
+                    DataTable dataTable = ConvertCsvToDataTable(csvfile);
+                    SaveDataTableToExcel(dataTable, Path.Combine(folderPath, $"Airtel+BSNL+VI_Mapping_{timestamp}.xlsx"));
+                }
+                
+                
+
+
+                logString.Append($"\nFile Merged Successfully\n");
+
+                bool isDev = Debugger.IsAttached || connectionString.Contains("192.168.5.22");
+                if (!isDev)
+                {
+                    outputPath = EncryptionandDecryption.AESEncrypt_File(outputPath, OFProcessing.file_enc_key);
+                }
+               
+
+
+                logString.Append($"\nFile encrypted Successfully Filename : {outputPath}\n");
+
+                
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error merging files: {ex.Message}");
+            }
+
+            //logString.Clear();
+        }
+
+
+
+        public void mergemca_dynamic2(string primaryPath, string secondaryPath, string headerTemplatePath, string extension)
+        {
+            try
+            {
+                logString.Append($"    - Outfile Generation Started:\n");
+
+                var primaryLines = File.ReadAllLines(primaryPath);
+                var secondaryLines = File.ReadAllLines(secondaryPath);
+            
+
+                //// Header template file
+
+                var templateHeader = headerTemplatePath.Split(',').Select(x => x.Trim()).ToList();
+
+                var primaryHeader = primaryLines[0].Split(new[] { "#VN=" }, StringSplitOptions.None).Last().Split(',').Select(x => x.Trim()).ToList();
+                var secondaryHeader = secondaryLines[0].Split(new[] { "#VN=" }, StringSplitOptions.None).Last().Split(',').Select(x => x.Trim()).ToList();
+               
+
+                var outputLines = new List<string>();
+                
+                 outputLines.Add(headerTemplatePath); 
+
+
+                for (int i = 1; i < primaryLines.Length; i++)
+                {
+                    var p = primaryLines[i].Split(',');
+                    var s = i < secondaryLines.Length ? secondaryLines[i].Split(',') : new string[0];
+                  
+
+                    List<string> line = new List<string>();
+
+                    foreach (var col in templateHeader)
+                    {
+                        string operatorName = "";
+                        string fieldName = "";
+
+                        if (col.Contains("_"))
+                        {
+                            var parts = col.Split('_');
+                            operatorName = parts[0].ToUpper();
+                            fieldName = parts[1].ToUpper();
+                        }
+                        else
+                        {
+                            fieldName = col.ToUpper();
+                        }
+
+                        string value = "";
+
+                        // AIRTEL → primary file
+                        if (operatorName.Contains(customer1))
+                        {
+                            int idx = primaryHeader.IndexOf(fieldName);
+                            if (idx >= 0 && p.Length > idx)
+                                value = p[idx];
+                        }
+                        // BSNL → secondary file
+                        else if (operatorName.Contains(customer2))
+                        {
+                            int idx = secondaryHeader.IndexOf(fieldName);
+                            if (idx >= 0 && s.Length > idx)
+                                value = s[idx];
+                        }
+                        
+                        else
+                        {
+                            // Fields like KIC,KID,KIK come from first file
+                            int idx = primaryHeader.IndexOf(fieldName);
+                            if (idx >= 0 && p.Length > idx)
+                                value = p[idx];
+                        }
+
+                        if (fieldName == "ICCID")
+                            value = NibbleSwap(value).Replace("F", "");
+                        else if (fieldName == "IMSI" && value.Length > 3)
+                            value = NibbleSwap(value).Substring(3);
+
+
+                        line.Add(value);
+                    }
+                    if (extension == "OTA")
+                    {
+                        outputLines.Add(string.Join(" ", line));
+                    }
+                    else if (extension == "txt")
+                    {
+                        outputLines.Add(string.Join(";", line));
+                    }
+                    else
+                    {
+                        outputLines.Add(string.Join(",", line));
+                    }
+                }
+
+                var folderPath = "";
+
+                if ((Debugger.IsAttached) || connectionString.Contains("192.168.5.22"))
+                {
+                    //folderPath = @"B:\DATA-FILES\DATATOOL\Telco_Customers\Taisys Input\Mapping files\testing\";
+                    folderPath = Path.Combine("D:\\Data_Gen\\Output\\", $"{customer}\\{profile}\\{DateTime.Now.ToString("yyyyMMdd")}");
+                }
+                else
+                {
+                    folderPath = Path.Combine(@"\\192.168.27.5\Data_Gen\Output\", $"{customer}\\{profile}\\{DateTime.Now:yyyyMMdd}");
+                }
+
+                Directory.CreateDirectory(folderPath);
+
+                var outputPath = Path.Combine(folderPath, $"{customer1}+{customer2}_Mapping_{timestamp}.{extension}");
+
+
 
                 //File.WriteAllLines(outputPath, outputLines);
                 File.WriteAllText(outputPath, string.Join(Environment.NewLine, outputLines));
+                if (extension == "csv")
+                {
+                    string csvfile = outputPath;
+                    DataTable dataTable = ConvertCsvToDataTable(csvfile);
+                    SaveDataTableToExcel(dataTable, Path.Combine(folderPath, $"Airtel+BSNL+VI_Mapping_{timestamp}.xlsx"));
+                }
 
 
 
@@ -960,18 +1295,20 @@ StringSplitOptions.None
                     outputPath = EncryptionandDecryption.AESEncrypt_File(outputPath, OFProcessing.file_enc_key);
                 }
 
+
+
                 logString.Append($"\nFile encrypted Successfully Filename : {outputPath}\n");
 
-                
+
             }
             catch (Exception ex)
             {
                 throw new Exception($"Error merging files: {ex.Message}");
             }
 
-            logString.Clear();
+            //logString.Clear();
         }
-      
+
 
         public string NibbleSwap(string s)
         {
@@ -1045,16 +1382,77 @@ StringSplitOptions.None
             }
         }
 
-
-      
-
-  
-    
-     
+        public static DataTable ConvertCsvToDataTable(string csvFilePath)
+        {
+            DataTable dt = new DataTable();
+            using (StreamReader sr = new StreamReader(csvFilePath))
 
 
 
-   
+
+            {
+                string[] headers = sr.ReadLine().Split(','); // Read first row as headers
+                foreach (string header in headers)
+                {
+                    dt.Columns.Add(header);
+                }
+
+                while (!sr.EndOfStream)
+                {
+                    string[] rows = sr.ReadLine().Split(',');
+                    dt.Rows.Add(rows);
+
+                }
+            }
+            return dt;
+        }
+
+        public static void SaveDataTableToExcel(DataTable dt, string excelFilePath)
+        {
+            try
+            {
+                using (var workbook = new XLWorkbook())
+                {
+                    var worksheet = workbook.Worksheets.Add("Sheet1");
+
+                    // Add headers
+                    for (int col = 0; col < dt.Columns.Count; col++)
+                    {
+                        worksheet.Cell(1, col + 1).Value = dt.Columns[col].ColumnName;
+                    }
+
+                    // Add rows
+                    for (int row = 0; row < dt.Rows.Count; row++)
+                    {
+                        for (int col = 0; col < dt.Columns.Count; col++)
+                        {
+                            worksheet.Cell(row + 2, col + 1).SetValue(dt.Rows[row][col]?.ToString() ?? "");
+                        }
+                    }
+
+
+                    var header = worksheet.Range(1, 1, 1, dt.Columns.Count);
+                    header.Style.Font.Bold = true;
+                    header.Style.Fill.BackgroundColor = XLColor.LightGray;
+                    header.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+
+                    worksheet.Columns().AdjustToContents(); // Auto-fit columns
+                    workbook.SaveAs(excelFilePath);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error while converting into excel: {ex.Message}");
+            }
+        }
+
+
+
+
+
+
+
+
         private void groupBox1_Enter(object sender, EventArgs e)
         {
 

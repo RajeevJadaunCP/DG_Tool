@@ -15,6 +15,35 @@ namespace DG_Tool.HelperClass
     public class CommonClass
     {
         public static string connectionString =  EncryptionandDecryption.DecryptString(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
+
+        public static List<CustomerDetails> GetCustomer_new()
+        {
+            List<CustomerDetails> list = new List<CustomerDetails>();
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                con.Open();
+                using (SqlCommand cmd = new SqlCommand("SELECT distinct CustomerID, CustomerName FROM Vw_GetCustomer v1\r\ninner join CustProfile c1 on v1.CustomerID = c1.CustID  where isactive  = 'Yes'     order by CustomerName", con))
+                {
+                    SqlDataReader reader = null;
+                    cmd.CommandType = System.Data.CommandType.Text;
+                    reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        list.Add(new CustomerDetails
+                        {
+                            CustomerName = reader["CustomerName"].ToString(),
+                            CustomerID = Convert.ToInt32(reader["CustomerID"]),
+                        });
+                    }
+                    //list.Insert(0,new CustomerDetails {
+                    //    CustomerName = "----Select----",
+                    //    CustomerID = 0,
+                    //});
+                }
+
+            }
+            return list;
+        }
         public static List<CustomerDetails> GetCustomer()
         {
             List<CustomerDetails> list = new List<CustomerDetails>();
@@ -43,6 +72,37 @@ namespace DG_Tool.HelperClass
             }
             return list;
         }
+
+
+        public static List<CustomerDetails> GetCustomer_1()
+        {
+            List<CustomerDetails> list = new List<CustomerDetails>();
+            using (SqlConnection con = new SqlConnection(connectionString))
+            {
+                con.Open();
+                using (SqlCommand cmd = new SqlCommand("\r\nSELECT  * FROM Vw_GetCustomer WHERE isactive = 'Yes' order by CustomerName", con))
+                {
+                    SqlDataReader reader = null;
+                    cmd.CommandType = System.Data.CommandType.Text;
+                    reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        list.Add(new CustomerDetails
+                        {
+                            CustomerName = reader["CustomerName"].ToString(),
+                            CustomerID = Convert.ToInt32(reader["CustomerID"]),
+                        });
+                    }
+                    //list.Insert(0,new CustomerDetails {
+                    //    CustomerName = "----Select----",
+                    //    CustomerID = 0,
+                    //});
+                }
+
+            }
+            return list;
+        }
+
 
         public static List<CustomerDetails> GetCustomerALL()
         {

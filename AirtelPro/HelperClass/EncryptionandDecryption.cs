@@ -1,8 +1,11 @@
-﻿using Org.BouncyCastle.Bcpg.OpenPgp;
+﻿using CardPrintingApplication;
 using Org.BouncyCastle.Bcpg;
+using Org.BouncyCastle.Bcpg.OpenPgp;
 using Org.BouncyCastle.Security;
-using System;using CardPrintingApplication;
+using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -13,6 +16,7 @@ namespace CardPrintingApplication
 {
     internal class EncryptionandDecryption
     {
+        public static string connectionString = EncryptionandDecryption.DecryptString(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
         public static string DecryptString(string cipherText)
         {
             string EncryptionKey = "XCgMNAvzSA3q+OkIEDf+8Q==";
@@ -197,7 +201,10 @@ namespace CardPrintingApplication
 
                 }
                 out_file_name = inputFile.Replace(extn, $"_{extn.Substring(1, extn.Length - 1)}.haes");
-                File.Delete(inputFile);
+                if ((!Debugger.IsAttached) && !connectionString.Contains("192.168.5.22"))
+                {
+                    File.Delete(inputFile);
+                }
                 return out_file_name;
             }
             catch (Exception ex) { return "Error.file"; }

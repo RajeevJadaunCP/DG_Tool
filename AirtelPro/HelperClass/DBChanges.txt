@@ -1,0 +1,15 @@
+﻿CREATE TABLE DummyProfileTracker
+(
+    ID INT IDENTITY(1,1) PRIMARY KEY,
+    ProfileName VARCHAR(100) NOT NULL,
+    LastICCID VARCHAR(19) NOT NULL,
+    LastIMSI VARCHAR(15) NOT NULL,
+    LastQty INT NOT NULL,
+    LastProcessedDate DATETIME NOT NULL DEFAULT(GETDATE())
+);
+
+CREATE TABLE [dbo].[CodeTracker](
+	[Prefix] [varchar](50) NULL,
+	[LastGeneratedCodeMSN] [varchar](50) NULL,
+	[LastGeneratedCodeMSC] [varchar](50) NULL
+);

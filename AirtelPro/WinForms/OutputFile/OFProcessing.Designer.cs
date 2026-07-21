@@ -34,6 +34,7 @@
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.label10 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.gb_progress = new System.Windows.Forms.GroupBox();
             this.button1 = new System.Windows.Forms.Button();
             this.Circle_Label = new System.Windows.Forms.TextBox();
             this.label15 = new System.Windows.Forms.Label();
@@ -44,8 +45,6 @@
             this.label11 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.labelMessage = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.txtoutput = new System.Windows.Forms.RichTextBox();
             this.label9 = new System.Windows.Forms.Label();
@@ -67,10 +66,12 @@
             this.cbxCircle = new System.Windows.Forms.ComboBox();
             this.cbxCustomer = new System.Windows.Forms.ComboBox();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.labelMessage = new System.Windows.Forms.Label();
+            //this.panel1 = new System.Windows.Forms.Panel();
             this.panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.groupBox1.SuspendLayout();
-            this.panel1.SuspendLayout();
+            //this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // ofdInputFile
@@ -122,6 +123,7 @@
             // 
             this.groupBox1.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.groupBox1.BackColor = System.Drawing.Color.White;
+            this.groupBox1.Controls.Add(this.gb_progress);
             this.groupBox1.Controls.Add(this.button1);
             this.groupBox1.Controls.Add(this.Circle_Label);
             this.groupBox1.Controls.Add(this.label15);
@@ -132,7 +134,7 @@
             this.groupBox1.Controls.Add(this.label11);
             this.groupBox1.Controls.Add(this.label12);
             this.groupBox1.Controls.Add(this.comboBox1);
-            this.groupBox1.Controls.Add(this.panel1);
+           // this.groupBox1.Controls.Add(this.panel1);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.txtoutput);
             this.groupBox1.Controls.Add(this.label9);
@@ -154,15 +156,24 @@
             this.groupBox1.Controls.Add(this.cbxCircle);
             this.groupBox1.Controls.Add(this.cbxCustomer);
             this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox1.Location = new System.Drawing.Point(31, 78);
+            this.groupBox1.Location = new System.Drawing.Point(31, 75);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBox1.Size = new System.Drawing.Size(699, 706);
+            this.groupBox1.Size = new System.Drawing.Size(699, 819);
             this.groupBox1.TabIndex = 47;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Out File Processing Details";
             this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
+            // 
+            // gb_progress
+            // 
+            this.gb_progress.Location = new System.Drawing.Point(23, 466);
+            this.gb_progress.Name = "gb_progress";
+            this.gb_progress.Size = new System.Drawing.Size(655, 89);
+            this.gb_progress.TabIndex = 48;
+            this.gb_progress.TabStop = false;
+            this.gb_progress.Text = "DG_Progress";
             // 
             // button1
             // 
@@ -276,31 +287,11 @@
             this.comboBox1.TabIndex = 68;
             this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
-            // panel1
-            // 
-            this.panel1.Controls.Add(this.labelMessage);
-            this.panel1.Location = new System.Drawing.Point(179, 432);
-            this.panel1.Margin = new System.Windows.Forms.Padding(4);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(377, 174);
-            this.panel1.TabIndex = 67;
-            this.panel1.Visible = false;
-            // 
-            // labelMessage
-            // 
-            this.labelMessage.AutoSize = true;
-            this.labelMessage.Location = new System.Drawing.Point(67, 130);
-            this.labelMessage.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.labelMessage.Name = "labelMessage";
-            this.labelMessage.Size = new System.Drawing.Size(235, 20);
-            this.labelMessage.TabIndex = 3;
-            this.labelMessage.Text = "Please wait, generating data....";
-            // 
             // label3
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(35, 460);
+            this.label3.Location = new System.Drawing.Point(54, 582);
             this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(155, 24);
@@ -309,7 +300,7 @@
             // 
             // txtoutput
             // 
-            this.txtoutput.Location = new System.Drawing.Point(39, 482);
+            this.txtoutput.Location = new System.Drawing.Point(39, 592);
             this.txtoutput.Margin = new System.Windows.Forms.Padding(4);
             this.txtoutput.Name = "txtoutput";
             this.txtoutput.Size = new System.Drawing.Size(625, 195);
@@ -537,12 +528,32 @@
             this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BackgroundWorker_DoWork);
             this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BackgroundWorker_RunWorkerCompleted);
             // 
+            // labelMessage
+            // 
+            this.labelMessage.AutoSize = true;
+            this.labelMessage.Location = new System.Drawing.Point(39, 77);
+            this.labelMessage.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelMessage.Name = "labelMessage";
+            this.labelMessage.Size = new System.Drawing.Size(235, 20);
+            this.labelMessage.TabIndex = 3;
+            this.labelMessage.Text = "Please wait, generating data....";
+            // 
+            // panel1
+            //// 
+            //this.panel1.Controls.Add(this.labelMessage);
+            //this.panel1.Location = new System.Drawing.Point(166, 636);
+            //this.panel1.Margin = new System.Windows.Forms.Padding(4);
+            //this.panel1.Name = "panel1";
+            //this.panel1.Size = new System.Drawing.Size(313, 105);
+            //this.panel1.TabIndex = 67;
+            //this.panel1.Visible = false;
+            //// 
             // OFProcessing
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.SeaShell;
-            this.ClientSize = new System.Drawing.Size(767, 788);
+            this.ClientSize = new System.Drawing.Size(767, 908);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
@@ -555,8 +566,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
+            //this.panel1.ResumeLayout(false);
+            //this.panel1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -587,8 +598,6 @@
         private System.Windows.Forms.ComboBox cbxCustomer;
         private System.Windows.Forms.RichTextBox txtoutput;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Label labelMessage;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.Label label11;
@@ -601,5 +610,8 @@
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.GroupBox gb_progress;
+        //private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Label labelMessage;
     }
 }
