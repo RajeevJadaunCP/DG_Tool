@@ -161,6 +161,7 @@
     <Compile Include="HelperClass\FileOperationLog.cs" />
     <Compile Include="HelperClass\GetVersion.cs" />
     <Compile Include="HelperClass\LogMaster.cs" />
+    <Compile Include="Models\DummyProfileTracker.cs" />
     <Compile Include="Models\FileStructure.cs" />
     <Compile Include="Models\LoginMaster.cs" />
     <Compile Include="Shared\FontSize.cs" />
@@ -757,6 +758,7 @@
   <ItemGroup>
     <Content Include="Backup\DbChanges.txt" />
     <Content Include="colorplast_icon.ico" />
+    <Content Include="HelperClass\DBChanges.txt" />
     <Content Include="HelperClass\mislenlaneous.txt" />
     <None Include="Resources\undo.png" />
     <None Include="Resources\redo.png" />

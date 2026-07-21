@@ -79,7 +79,8 @@ namespace DG_Tool.WinForms.Authentication
                 txtUsername.Enabled = false;
             }
 
-			//label7.Text = "DATA GEN TOOL WIHTOUT IMSI DUPLICIITY";
+            //label7.Text = "DATA GEN TOOL WIHTOUT IMSI DUPLICIITY";
+            
             GetSignUpShowOrNot();
 		}
 

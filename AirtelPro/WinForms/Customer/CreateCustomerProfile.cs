@@ -519,96 +519,105 @@ namespace DG_Tool
 
         private void button1_Click(object sender, EventArgs e)
         {
-            int custID=Convert.ToInt32(comboBox1.SelectedValue.ToString());
-            int newcustID=Convert.ToInt32(comboBox4.SelectedValue.ToString());
-            int circleID = Convert.ToInt32(comboBox2.SelectedValue.ToString());
-            int newcircleID = Convert.ToInt32(comboBox5.SelectedValue.ToString());
-            int profileID = Convert.ToInt32(comboBox3.SelectedValue.ToString());
-            string old_profilename = comboBox3.Text.Trim();
-            string profilename = textBox1.Text.Trim();
-
-            //added as per subhash sir to create new profile
-            if (old_profilename.ToUpper().Replace(" ","").Contains("AIS140"))
+            try
             {
+                int custID = Convert.ToInt32(comboBox1.SelectedValue.ToString());
+                int newcustID = Convert.ToInt32(comboBox4.SelectedValue.ToString());
+                int circleID = Convert.ToInt32(comboBox2.SelectedValue.ToString());
+                int newcircleID = Convert.ToInt32(comboBox5.SelectedValue.ToString());
+                int profileID = Convert.ToInt32(comboBox3.SelectedValue.ToString());
+                string old_profilename = comboBox3.Text.Trim();
+                string profilename = textBox1.Text.Trim();
 
-                string newheader = InputBox.Show("Enter New Header for mca", "New Header", "");
-
-                // Check if user entered something
-                if (string.IsNullOrWhiteSpace(newheader))
+                //added as per subhash sir to create new profile
+                if (old_profilename.ToUpper().Replace(" ", "").Contains("AIS140"))
                 {
-                    MessageBox.Show("Header cannot be empty!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
 
-                // Use the header now
-                //MessageBox.Show("New header entered: " + newheader);
+                    string newheader = InputBox.Show("Enter New Header for mca", "New Header", "");
 
-
-                if (custID > 0 && profileID > 0 && circleID > 0 && !string.IsNullOrEmpty(profilename) && newcustID > 0 && newcircleID > 0)
-                {
-                    try
+                    // Check if user entered something
+                    if (string.IsNullOrWhiteSpace(newheader))
                     {
-                        using (SqlConnection con = new SqlConnection(connectionString))
+                        MessageBox.Show("Header cannot be empty!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    // Use the header now
+                    //MessageBox.Show("New header entered: " + newheader);
+
+
+                    if (custID > 0 && profileID > 0 && circleID > 0 && !string.IsNullOrEmpty(profilename) && newcustID > 0 && newcircleID > 0)
+                    {
+                        try
                         {
-                            con.Open();
-                            using (SqlCommand cmd = new SqlCommand("CreateNewProfileAndCopyData_AIS140", con))
+                            using (SqlConnection con = new SqlConnection(connectionString))
                             {
-                                cmd.CommandType = CommandType.StoredProcedure;
-                                cmd.Parameters.AddWithValue("@OldCustID", custID);
-                                cmd.Parameters.AddWithValue("@newCustID", newcustID);
-                                cmd.Parameters.AddWithValue("@OldCircleID", circleID);
-                                cmd.Parameters.AddWithValue("@newCircleID", newcircleID);
-                                cmd.Parameters.AddWithValue("@OldProfileID", profileID);
-                                cmd.Parameters.AddWithValue("@NewProfileName", profilename);
-                                cmd.Parameters.AddWithValue("@Newheader", newheader);
-                                cmd.ExecuteNonQuery();
+                                con.Open();
+                                using (SqlCommand cmd = new SqlCommand("CreateNewProfileAndCopyData_AIS140", con))
+                                {
+                                    cmd.CommandType = CommandType.StoredProcedure;
+                                    cmd.Parameters.AddWithValue("@OldCustID", custID);
+                                    cmd.Parameters.AddWithValue("@newCustID", newcustID);
+                                    cmd.Parameters.AddWithValue("@OldCircleID", circleID);
+                                    cmd.Parameters.AddWithValue("@newCircleID", newcircleID);
+                                    cmd.Parameters.AddWithValue("@OldProfileID", profileID);
+                                    cmd.Parameters.AddWithValue("@NewProfileName", profilename);
+                                    cmd.Parameters.AddWithValue("@Newheader", newheader);
+                                    cmd.ExecuteNonQuery();
+                                }
                             }
                         }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message);
+                        }
+                        MessageBox.Show("Profile Created Succesfully.");
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        MessageBox.Show(ex.Message);
+                        MessageBox.Show("Please Enter All Details First.");
                     }
-                    MessageBox.Show("Profile Created Succesfully.");
+
                 }
                 else
                 {
-                    MessageBox.Show("Please Enter All Details First.");
+                    if (custID > 0 && profileID > 0 && circleID > 0 && !string.IsNullOrEmpty(profilename) && newcustID > 0 && newcircleID > 0)
+                    {
+                        try
+                        {
+                            using (SqlConnection con = new SqlConnection(connectionString))
+                            {
+                                con.Open();
+                                using (SqlCommand cmd = new SqlCommand("CreateNewProfileAndCopyData", con))
+                                {
+                                    cmd.CommandType = CommandType.StoredProcedure;
+                                    cmd.Parameters.AddWithValue("@OldCustID", custID);
+                                    cmd.Parameters.AddWithValue("@newCustID", newcustID);
+                                    cmd.Parameters.AddWithValue("@OldCircleID", circleID);
+                                    cmd.Parameters.AddWithValue("@newCircleID", newcircleID);
+                                    cmd.Parameters.AddWithValue("@OldProfileID", profileID);
+                                    cmd.Parameters.AddWithValue("@NewProfileName", profilename);
+                                    cmd.ExecuteNonQuery();
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message);
+                        }
+                        MessageBox.Show("Profile Created Succesfully.");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please Enter All Details First.");
+                    }
                 }
 
+                this.Close();
             }
-            else
+            catch (Exception ex)
             {
-                if (custID > 0 && profileID > 0 && circleID > 0 && !string.IsNullOrEmpty(profilename) && newcustID > 0 && newcircleID > 0)
-                {
-                    try
-                    {
-                        using (SqlConnection con = new SqlConnection(connectionString))
-                        {
-                            con.Open();
-                            using (SqlCommand cmd = new SqlCommand("CreateNewProfileAndCopyData", con))
-                            {
-                                cmd.CommandType = CommandType.StoredProcedure;
-                                cmd.Parameters.AddWithValue("@OldCustID", custID);
-                                cmd.Parameters.AddWithValue("@newCustID", newcustID);
-                                cmd.Parameters.AddWithValue("@OldCircleID", circleID);
-                                cmd.Parameters.AddWithValue("@newCircleID", newcircleID);
-                                cmd.Parameters.AddWithValue("@OldProfileID", profileID);
-                                cmd.Parameters.AddWithValue("@NewProfileName", profilename);
-                                cmd.ExecuteNonQuery();
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.Message);
-                    }
-                    MessageBox.Show("Profile Created Succesfully.");
-                }
-                else
-                {
-                    MessageBox.Show("Please Enter All Details First.");
-                }
+                MessageBox.Show(ex.Message);
             }
         }
 

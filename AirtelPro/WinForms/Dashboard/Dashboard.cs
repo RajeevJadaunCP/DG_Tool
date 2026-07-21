@@ -308,6 +308,23 @@ namespace DG_Tool
             dashboard.ShowDialog();
         }
 
-       
+
+        private void Dashboard_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            DialogResult result = MessageBox.Show(
+                "Do you want to exit?",
+                "Exit",
+                MessageBoxButtons.YesNo);
+
+            if (result == DialogResult.No)
+            {
+                e.Cancel = true;
+            }
+            else
+            {
+                Application.Exit();
+            }
+        }
+
     }
 }
