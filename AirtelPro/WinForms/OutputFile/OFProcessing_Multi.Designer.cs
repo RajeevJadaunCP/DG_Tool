@@ -35,6 +35,10 @@
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.label10 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
+            this.license_file = new System.Windows.Forms.Button();
+            this.textBox1 = new System.Windows.Forms.TextBox();
             this.cbxProfile = new System.Windows.Forms.ComboBox();
             this.cbxCustomer = new System.Windows.Forms.ComboBox();
             this.label11 = new System.Windows.Forms.Label();
@@ -60,10 +64,6 @@
             this.btnInputFile = new System.Windows.Forms.Button();
             this.txtInputfile = new System.Windows.Forms.TextBox();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label13 = new System.Windows.Forms.Label();
-            this.license_file = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
             this.panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -157,15 +157,64 @@
             this.groupBox1.Text = "Multi File Processing";
             this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
             // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.ForeColor = System.Drawing.Color.Red;
+            this.label9.Location = new System.Drawing.Point(366, 309);
+            this.label9.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(15, 20);
+            this.label9.TabIndex = 102;
+            this.label9.Text = "*";
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label13.ForeColor = System.Drawing.Color.Gray;
+            this.label13.Location = new System.Drawing.Point(225, 306);
+            this.label13.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(144, 24);
+            this.label13.TabIndex = 101;
+            this.label13.Text = "OS License File";
+            // 
+            // license_file
+            // 
+            this.license_file.BackColor = System.Drawing.Color.Gray;
+            this.license_file.FlatAppearance.BorderSize = 0;
+            this.license_file.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.license_file.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.license_file.ForeColor = System.Drawing.Color.White;
+            this.license_file.Location = new System.Drawing.Point(710, 329);
+            this.license_file.Margin = new System.Windows.Forms.Padding(4);
+            this.license_file.Name = "license_file";
+            this.license_file.Size = new System.Drawing.Size(153, 37);
+            this.license_file.TabIndex = 100;
+            this.license_file.Text = "License_File";
+            this.license_file.UseVisualStyleBackColor = false;
+            this.license_file.Click += new System.EventHandler(this.license_file_Click);
+            // 
+            // textBox1
+            // 
+            this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBox1.Location = new System.Drawing.Point(229, 333);
+            this.textBox1.Margin = new System.Windows.Forms.Padding(4);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.ReadOnly = true;
+            this.textBox1.Size = new System.Drawing.Size(455, 29);
+            this.textBox1.TabIndex = 99;
+            // 
             // cbxProfile
             // 
             this.cbxProfile.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxProfile.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbxProfile.FormattingEnabled = true;
-            this.cbxProfile.Location = new System.Drawing.Point(616, 54);
+            this.cbxProfile.Location = new System.Drawing.Point(443, 54);
             this.cbxProfile.Margin = new System.Windows.Forms.Padding(4);
             this.cbxProfile.Name = "cbxProfile";
-            this.cbxProfile.Size = new System.Drawing.Size(321, 32);
+            this.cbxProfile.Size = new System.Drawing.Size(636, 32);
             this.cbxProfile.TabIndex = 98;
             this.cbxProfile.SelectedIndexChanged += new System.EventHandler(this.cbxProfile_SelectedIndexChanged);
             // 
@@ -174,10 +223,10 @@
             this.cbxCustomer.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxCustomer.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbxCustomer.FormattingEnabled = true;
-            this.cbxCustomer.Location = new System.Drawing.Point(296, 54);
+            this.cbxCustomer.Location = new System.Drawing.Point(69, 54);
             this.cbxCustomer.Margin = new System.Windows.Forms.Padding(4);
             this.cbxCustomer.Name = "cbxCustomer";
-            this.cbxCustomer.Size = new System.Drawing.Size(277, 32);
+            this.cbxCustomer.Size = new System.Drawing.Size(333, 32);
             this.cbxCustomer.TabIndex = 97;
             this.cbxCustomer.SelectedIndexChanged += new System.EventHandler(this.cbxCustomer_SelectedIndexChanged_1);
             // 
@@ -185,7 +234,7 @@
             // 
             this.label11.AutoSize = true;
             this.label11.ForeColor = System.Drawing.Color.Red;
-            this.label11.Location = new System.Drawing.Point(643, 346);
+            this.label11.Location = new System.Drawing.Point(578, 346);
             this.label11.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(15, 20);
@@ -231,7 +280,7 @@
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.ForeColor = System.Drawing.Color.Gray;
-            this.label4.Location = new System.Drawing.Point(299, 26);
+            this.label4.Location = new System.Drawing.Point(141, 26);
             this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(197, 24);
@@ -242,7 +291,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.ForeColor = System.Drawing.Color.Red;
-            this.label1.Location = new System.Drawing.Point(457, 240);
+            this.label1.Location = new System.Drawing.Point(392, 240);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(15, 20);
@@ -254,7 +303,7 @@
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.Color.Gray;
-            this.label2.Location = new System.Drawing.Point(291, 237);
+            this.label2.Location = new System.Drawing.Point(226, 237);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(169, 24);
@@ -268,7 +317,7 @@
             this.btnInputFile3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnInputFile3.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnInputFile3.ForeColor = System.Drawing.Color.White;
-            this.btnInputFile3.Location = new System.Drawing.Point(776, 260);
+            this.btnInputFile3.Location = new System.Drawing.Point(711, 260);
             this.btnInputFile3.Margin = new System.Windows.Forms.Padding(4);
             this.btnInputFile3.Name = "btnInputFile3";
             this.btnInputFile3.Size = new System.Drawing.Size(153, 37);
@@ -280,7 +329,7 @@
             // txtInputfile3
             // 
             this.txtInputfile3.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtInputfile3.Location = new System.Drawing.Point(295, 264);
+            this.txtInputfile3.Location = new System.Drawing.Point(230, 264);
             this.txtInputfile3.Margin = new System.Windows.Forms.Padding(4);
             this.txtInputfile3.Name = "txtInputfile3";
             this.txtInputfile3.ReadOnly = true;
@@ -291,7 +340,7 @@
             // 
             this.label12.AutoSize = true;
             this.label12.ForeColor = System.Drawing.Color.Red;
-            this.label12.Location = new System.Drawing.Point(445, 168);
+            this.label12.Location = new System.Drawing.Point(380, 168);
             this.label12.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(15, 20);
@@ -303,7 +352,7 @@
             this.label17.AutoSize = true;
             this.label17.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label17.ForeColor = System.Drawing.Color.Gray;
-            this.label17.Location = new System.Drawing.Point(289, 164);
+            this.label17.Location = new System.Drawing.Point(224, 164);
             this.label17.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(158, 24);
@@ -317,7 +366,7 @@
             this.btnInputFile2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnInputFile2.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnInputFile2.ForeColor = System.Drawing.Color.White;
-            this.btnInputFile2.Location = new System.Drawing.Point(776, 188);
+            this.btnInputFile2.Location = new System.Drawing.Point(711, 188);
             this.btnInputFile2.Margin = new System.Windows.Forms.Padding(4);
             this.btnInputFile2.Name = "btnInputFile2";
             this.btnInputFile2.Size = new System.Drawing.Size(153, 37);
@@ -329,7 +378,7 @@
             // txtInputfile2
             // 
             this.txtInputfile2.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtInputfile2.Location = new System.Drawing.Point(293, 192);
+            this.txtInputfile2.Location = new System.Drawing.Point(228, 192);
             this.txtInputfile2.Margin = new System.Windows.Forms.Padding(4);
             this.txtInputfile2.Name = "txtInputfile2";
             this.txtInputfile2.ReadOnly = true;
@@ -339,7 +388,7 @@
             // panel1
             // 
             this.panel1.Controls.Add(this.labelMessage);
-            this.panel1.Location = new System.Drawing.Point(443, 414);
+            this.panel1.Location = new System.Drawing.Point(378, 414);
             this.panel1.Margin = new System.Windows.Forms.Padding(4);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(377, 174);
@@ -360,7 +409,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(299, 442);
+            this.label3.Location = new System.Drawing.Point(234, 442);
             this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(155, 24);
@@ -369,7 +418,7 @@
             // 
             // txtoutput
             // 
-            this.txtoutput.Location = new System.Drawing.Point(303, 464);
+            this.txtoutput.Location = new System.Drawing.Point(238, 464);
             this.txtoutput.Margin = new System.Windows.Forms.Padding(4);
             this.txtoutput.Name = "txtoutput";
             this.txtoutput.Size = new System.Drawing.Size(625, 195);
@@ -380,7 +429,7 @@
             // 
             this.label8.AutoSize = true;
             this.label8.ForeColor = System.Drawing.Color.Red;
-            this.label8.Location = new System.Drawing.Point(479, 100);
+            this.label8.Location = new System.Drawing.Point(414, 100);
             this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(15, 20);
@@ -392,7 +441,7 @@
             this.lblInputFile.AutoSize = true;
             this.lblInputFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblInputFile.ForeColor = System.Drawing.Color.Gray;
-            this.lblInputFile.Location = new System.Drawing.Point(291, 99);
+            this.lblInputFile.Location = new System.Drawing.Point(226, 99);
             this.lblInputFile.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblInputFile.Name = "lblInputFile";
             this.lblInputFile.Size = new System.Drawing.Size(188, 24);
@@ -406,7 +455,7 @@
             this.btnSubmit.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btnSubmit.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnSubmit.ForeColor = System.Drawing.Color.White;
-            this.btnSubmit.Location = new System.Drawing.Point(493, 380);
+            this.btnSubmit.Location = new System.Drawing.Point(428, 380);
             this.btnSubmit.Margin = new System.Windows.Forms.Padding(4);
             this.btnSubmit.Name = "btnSubmit";
             this.btnSubmit.Size = new System.Drawing.Size(224, 43);
@@ -422,7 +471,7 @@
             this.btnInputFile.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnInputFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnInputFile.ForeColor = System.Drawing.Color.White;
-            this.btnInputFile.Location = new System.Drawing.Point(776, 121);
+            this.btnInputFile.Location = new System.Drawing.Point(711, 121);
             this.btnInputFile.Margin = new System.Windows.Forms.Padding(4);
             this.btnInputFile.Name = "btnInputFile";
             this.btnInputFile.Size = new System.Drawing.Size(153, 37);
@@ -434,7 +483,7 @@
             // txtInputfile
             // 
             this.txtInputfile.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtInputfile.Location = new System.Drawing.Point(295, 125);
+            this.txtInputfile.Location = new System.Drawing.Point(230, 125);
             this.txtInputfile.Margin = new System.Windows.Forms.Padding(4);
             this.txtInputfile.Name = "txtInputfile";
             this.txtInputfile.ReadOnly = true;
@@ -445,55 +494,6 @@
             // 
             this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BackgroundWorker_DoWork);
             this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.BackgroundWorker_RunWorkerCompleted);
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.ForeColor = System.Drawing.Color.Red;
-            this.label9.Location = new System.Drawing.Point(431, 309);
-            this.label9.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(15, 20);
-            this.label9.TabIndex = 102;
-            this.label9.Text = "*";
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label13.ForeColor = System.Drawing.Color.Gray;
-            this.label13.Location = new System.Drawing.Point(290, 306);
-            this.label13.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(144, 24);
-            this.label13.TabIndex = 101;
-            this.label13.Text = "OS License File";
-            // 
-            // license_file
-            // 
-            this.license_file.BackColor = System.Drawing.Color.Gray;
-            this.license_file.FlatAppearance.BorderSize = 0;
-            this.license_file.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.license_file.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.license_file.ForeColor = System.Drawing.Color.White;
-            this.license_file.Location = new System.Drawing.Point(775, 329);
-            this.license_file.Margin = new System.Windows.Forms.Padding(4);
-            this.license_file.Name = "license_file";
-            this.license_file.Size = new System.Drawing.Size(153, 37);
-            this.license_file.TabIndex = 100;
-            this.license_file.Text = "License_File";
-            this.license_file.UseVisualStyleBackColor = false;
-            this.license_file.Click += new System.EventHandler(this.license_file_Click);
-            // 
-            // textBox1
-            // 
-            this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox1.Location = new System.Drawing.Point(294, 333);
-            this.textBox1.Margin = new System.Windows.Forms.Padding(4);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(455, 29);
-            this.textBox1.TabIndex = 99;
             // 
             // OFProcessing_Multi
             // 

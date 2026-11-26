@@ -85,8 +85,8 @@
     <Reference Include="ExcelNumberFormat, Version=1.1.0.0, Culture=neutral, PublicKeyToken=23c6f5d73be07eca, processorArchitecture=MSIL">
       <HintPath>..\packages\ExcelNumberFormat.1.1.0\lib\net20\ExcelNumberFormat.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Bcl.Cryptography, Version=10.0.0.6, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Bcl.Cryptography.10.0.6\lib\net462\Microsoft.Bcl.Cryptography.dll</HintPath>
+    <Reference Include="Microsoft.Bcl.Cryptography, Version=10.0.0.11, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.Cryptography.10.0.11\lib\net462\Microsoft.Bcl.Cryptography.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Bcl.HashCode, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.HashCode.1.1.1\lib\net461\Microsoft.Bcl.HashCode.dll</HintPath>
@@ -118,8 +118,8 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Formats.Asn1, Version=10.0.0.6, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Formats.Asn1.10.0.6\lib\net462\System.Formats.Asn1.dll</HintPath>
+    <Reference Include="System.Formats.Asn1, Version=10.0.0.11, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Formats.Asn1.10.0.11\lib\net462\System.Formats.Asn1.dll</HintPath>
     </Reference>
     <Reference Include="System.IO.FileSystem.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.IO.FileSystem.Primitives.4.0.1\lib\net46\System.IO.FileSystem.Primitives.dll</HintPath>
@@ -140,8 +140,8 @@
       <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.1.2\lib\net462\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
     <Reference Include="System.Security" />
-    <Reference Include="System.Security.Cryptography.Xml, Version=10.0.0.6, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Security.Cryptography.Xml.10.0.6\lib\net462\System.Security.Cryptography.Xml.dll</HintPath>
+    <Reference Include="System.Security.Cryptography.Xml, Version=10.0.0.11, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Xml.10.0.11\lib\net462\System.Security.Cryptography.Xml.dll</HintPath>
     </Reference>
     <Reference Include="System.ValueTuple" />
     <Reference Include="System.Windows.Forms.DataVisualization" />
@@ -246,6 +246,18 @@
     </Compile>
     <Compile Include="WinForms\Dashboard\DashboardSummary.Designer.cs">
       <DependentUpon>DashboardSummary.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\GenerateTemplate\Script_TemplateList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\GenerateTemplate\Script_TemplateList.Designer.cs">
+      <DependentUpon>Script_TemplateList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WinForms\GenerateTemplate\Script_TemplateListView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WinForms\GenerateTemplate\Script_TemplateListView.Designer.cs">
+      <DependentUpon>Script_TemplateListView.cs</DependentUpon>
     </Compile>
     <Compile Include="WinForms\OutputFile\Euicc_Data_Verification.cs">
       <SubType>Form</SubType>
@@ -435,6 +447,7 @@
     <Compile Include="WinForms\OutputFile\DetailedProcessList.Designer.cs">
       <DependentUpon>DetailedProcessList.cs</DependentUpon>
     </Compile>
+    <Compile Include="WinForms\OutputFile\FileProcessorcs.cs" />
     <Compile Include="WinForms\OutputFile\OFGenerationList.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -564,6 +577,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="WinForms\Dashboard\DashboardSummary.resx">
       <DependentUpon>DashboardSummary.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\GenerateTemplate\Script_TemplateList.resx">
+      <DependentUpon>Script_TemplateList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WinForms\GenerateTemplate\Script_TemplateListView.resx">
+      <DependentUpon>Script_TemplateListView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="WinForms\OutputFile\Euicc_Data_Verification.resx">
       <DependentUpon>Euicc_Data_Verification.cs</DependentUpon>

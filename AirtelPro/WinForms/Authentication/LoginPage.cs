@@ -63,7 +63,7 @@ namespace DG_Tool.WinForms.Authentication
 		{
 			InitializeComponent();
 
-			txtVersion.Text = "1.0.0.4.2";
+			txtVersion.Text = "1.0.0.4.3";
 			txtYears.Text = GetVersion.GetYears();
 
 
@@ -79,7 +79,7 @@ namespace DG_Tool.WinForms.Authentication
                 txtUsername.Enabled = false;
             }
 
-            //label7.Text = "DATA GEN TOOL WIHTOUT IMSI DUPLICIITY";
+            //label7.Text = "DATA GEN TOOL WIHTOUT IMSI ICCID DUPLICIITY";
             
             GetSignUpShowOrNot();
 		}

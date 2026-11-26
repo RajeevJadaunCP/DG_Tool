@@ -67,11 +67,9 @@
             this.cbxCustomer = new System.Windows.Forms.ComboBox();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.labelMessage = new System.Windows.Forms.Label();
-            //this.panel1 = new System.Windows.Forms.Panel();
             this.panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.groupBox1.SuspendLayout();
-            //this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // ofdInputFile
@@ -134,7 +132,6 @@
             this.groupBox1.Controls.Add(this.label11);
             this.groupBox1.Controls.Add(this.label12);
             this.groupBox1.Controls.Add(this.comboBox1);
-           // this.groupBox1.Controls.Add(this.panel1);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.txtoutput);
             this.groupBox1.Controls.Add(this.label9);
@@ -168,9 +165,9 @@
             // 
             // gb_progress
             // 
-            this.gb_progress.Location = new System.Drawing.Point(23, 466);
+            this.gb_progress.Location = new System.Drawing.Point(23, 472);
             this.gb_progress.Name = "gb_progress";
-            this.gb_progress.Size = new System.Drawing.Size(655, 89);
+            this.gb_progress.Size = new System.Drawing.Size(655, 83);
             this.gb_progress.TabIndex = 48;
             this.gb_progress.TabStop = false;
             this.gb_progress.Text = "DG_Progress";
@@ -291,7 +288,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(54, 582);
+            this.label3.Location = new System.Drawing.Point(54, 562);
             this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(155, 24);
@@ -365,14 +362,14 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.label4.ForeColor = System.Drawing.Color.Gray;
-            this.label4.Location = new System.Drawing.Point(72, 335);
+            this.label4.Location = new System.Drawing.Point(72, 327);
             this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(192, 24);
-            this.label4.TabIndex = 58;
-            this.label4.Text = "Selected Licence FIle";
+            this.label4.Size = new System.Drawing.Size(170, 20);
+            this.label4.TabIndex = 25;
+            this.label4.Text = "Selected Licence File";
             // 
             // lblInputFile
             // 
@@ -538,16 +535,6 @@
             this.labelMessage.TabIndex = 3;
             this.labelMessage.Text = "Please wait, generating data....";
             // 
-            // panel1
-            //// 
-            //this.panel1.Controls.Add(this.labelMessage);
-            //this.panel1.Location = new System.Drawing.Point(166, 636);
-            //this.panel1.Margin = new System.Windows.Forms.Padding(4);
-            //this.panel1.Name = "panel1";
-            //this.panel1.Size = new System.Drawing.Size(313, 105);
-            //this.panel1.TabIndex = 67;
-            //this.panel1.Visible = false;
-            //// 
             // OFProcessing
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -566,8 +553,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            //this.panel1.ResumeLayout(false);
-            //this.panel1.PerformLayout();
             this.ResumeLayout(false);
 
         }

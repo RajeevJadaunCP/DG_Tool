@@ -67,6 +67,12 @@ namespace DG_Tool.WinForms.OutputFile
                     SqlDataAdapter sda = new SqlDataAdapter(cmd);
                     DataTable dt = new DataTable();
                     sda.Fill(dt);
+                    if (dt.Columns.Contains("FileDetails"))
+                    {
+                        dt.Columns["FileDetails"].MaxLength = -1;   // line breaks add characters
+                        
+                    }
+
                     HDIDS = dt.AsEnumerable()
                                  .Select(row => row.Field<int>("FileID"))
                                  .ToList();
@@ -76,12 +82,156 @@ namespace DG_Tool.WinForms.OutputFile
                     dgvDetailedList.ColumnHeadersDefaultCellStyle.BackColor = Color.IndianRed;
                     dgvDetailedList.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
                     dgvDetailedList.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", 10, FontStyle.Bold);
-                   // dgvDetailedList.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
-                    
+                    // dgvDetailedList.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+
+                    //AddButtonColumn();
+                    AutoSizeGrid(dgvDetailedList, "FileDetails");
+                    WrapColumnToWidth(dgvDetailedList, "FileDetails");   // <-- new
+                    SetWrapRowHeights(dgvDetailedList);
+
                 }
             }
 
         }
+
+        private void WrapColumnToWidth(DataGridView grid, string columnName)
+        {
+            if (!grid.Columns.Contains(columnName)) return;
+
+            Font font = grid.DefaultCellStyle.Font ?? grid.Font;
+            int usable = grid.Columns[columnName].Width - 12;   // cell padding
+            if (usable < 40) return;
+
+            foreach (DataGridViewRow row in grid.Rows)
+            {
+                if (row.IsNewRow) continue;
+
+                string raw = Convert.ToString(row.Cells[columnName].Value).Replace("\r\n", "").Replace("\n", "");
+
+                row.Cells[columnName].Tag = raw;        // <-- real path lives here
+                row.Cells[columnName].Value = WrapToWidth(raw, usable, font);
+                row.Cells[columnName].ToolTipText = raw;
+            }
+        }
+
+        private static string WrapToWidth(string value, int maxWidth, Font font)
+        {
+            if (string.IsNullOrWhiteSpace(value)) return value;
+
+            value = value.Replace("\r\n", "").Replace("\n", "");
+
+            var lines = new List<string>();
+            var line = new StringBuilder();
+            var token = new StringBuilder();
+
+            foreach (char c in value)
+            {
+                token.Append(c);
+
+                // a break is allowed right after one of these
+                if (c == '\\' || c == '/' || c == '_' || c == '-')
+                    PushToken(lines, line, token, maxWidth, font);
+            }
+
+            if (token.Length > 0) PushToken(lines, line, token, maxWidth, font);
+            if (line.Length > 0) lines.Add(line.ToString());
+
+            return string.Join(Environment.NewLine, lines);
+        }
+
+        private static void PushToken(List<string> lines, StringBuilder line,
+                                      StringBuilder token, int maxWidth, Font font)
+        {
+            string t = token.ToString();
+            token.Clear();
+
+            // current line can't take it → start a new one
+            if (line.Length > 0 &&
+                TextRenderer.MeasureText(line.ToString() + t, font).Width > maxWidth)
+            {
+                lines.Add(line.ToString());
+                line.Clear();
+            }
+
+            // single chunk wider than the column → cut it by characters
+            while (TextRenderer.MeasureText(t, font).Width > maxWidth)
+            {
+                int cut = t.Length;
+                while (cut > 1 &&
+                       TextRenderer.MeasureText(t.Substring(0, cut), font).Width > maxWidth)
+                    cut--;
+
+                lines.Add(t.Substring(0, cut));
+                t = t.Substring(cut);
+            }
+
+            line.Append(t);
+        }
+
+        private const int MaxTextLines = 3;
+        private const int MaxColumnWidth = 420;
+
+        private static int HeaderMinWidth(DataGridViewColumn col, Font font)
+        {
+            if (string.IsNullOrEmpty(col.HeaderText)) return 20;
+
+            int widest = 0;
+            foreach (string word in col.HeaderText.Split(' '))
+                widest = Math.Max(widest, TextRenderer.MeasureText(word, font).Width);
+
+            return widest + 24;
+        }
+
+      
+
+        private void AutoSizeGrid(DataGridView grid, params string[] wrapColumns)
+        {
+            if (grid.Columns.Count == 0) return;
+
+            grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+            grid.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.None;
+
+            grid.ColumnHeadersDefaultCellStyle.WrapMode = DataGridViewTriState.True;
+            grid.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            grid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+
+            foreach (DataGridViewColumn c in grid.Columns)
+                c.AutoSizeMode = DataGridViewAutoSizeColumnMode.NotSet;
+
+            foreach (string name in wrapColumns)
+            {
+                if (!grid.Columns.Contains(name)) continue;
+                grid.Columns[name].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+                grid.Columns[name].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            }
+
+            grid.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.AllCells);
+
+            Font headerFont = grid.ColumnHeadersDefaultCellStyle.Font ?? grid.Font;
+            int total = 0;
+
+            foreach (DataGridViewColumn col in grid.Columns)
+            {
+                col.Width = Math.Min(col.Width + 10, MaxColumnWidth);
+                col.MinimumWidth = Math.Min(HeaderMinWidth(col, headerFont), MaxColumnWidth);
+                total += col.Width;
+            }
+
+            int available = grid.ClientSize.Width - grid.RowHeadersWidth
+                            - SystemInformation.VerticalScrollBarWidth;
+
+            if (total < available && wrapColumns.Length > 0 && grid.Columns.Contains(wrapColumns[0]))
+                grid.Columns[wrapColumns[0]].Width += (available - total);
+        }
+
+        private void SetWrapRowHeights(DataGridView grid)
+        {
+            
+            grid.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+           
+        }
+        
+
         private void dgvDetailedList_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             

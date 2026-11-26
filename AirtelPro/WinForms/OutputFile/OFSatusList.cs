@@ -84,7 +84,8 @@ namespace DG_Tool.WinForms.OutputFile
             {
 
                 con.Open();
-                using (SqlCommand cmd = new SqlCommand("usp_DataGenProcessList", con))
+                //using (SqlCommand cmd = new SqlCommand("usp_DataGenProcessList", con))
+                using (SqlCommand cmd = new SqlCommand("ZZZ_usp_DataGenProcessList_1", con))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@customer", customerName);
@@ -97,6 +98,13 @@ namespace DG_Tool.WinForms.OutputFile
                     DataTable dt = new DataTable();
                     sda.Fill(dt);
 
+                    if (dt.Columns.Contains("DataGenProcessHDIDs"))
+                    {
+                        foreach (DataRow r in dt.Rows)
+                            r["DataGenProcessHDIDs"] = WrapIds(Convert.ToString(r["DataGenProcessHDIDs"]));
+                        dt.AcceptChanges();
+                    }
+
                     dgvBriefList.DataSource = dt;
 
                     dgvBriefList.EnableHeadersVisualStyles = false;
@@ -105,9 +113,70 @@ namespace DG_Tool.WinForms.OutputFile
                     dgvBriefList.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", 10, FontStyle.Bold);
                     //dgvBriefList.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
                     //dgvBriefList.Columns["RolesId"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                    // --- auto adjust columns ---
+                    AutoSizeGrid(dgvBriefList);
                 }
             }
         }
+
+        private const int MaxIdLines = 3;   // never more than 3 lines
+        private const int WrapAfterIdCount = 6;   // 6 or fewer ids stay on one line
+
+        private static string WrapIds(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value)) return value;
+
+            string[] ids = value.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries);
+            for (int i = 0; i < ids.Length; i++) ids[i] = ids[i].Trim();
+
+            if (ids.Length <= WrapAfterIdCount) return string.Join(", ", ids);
+
+            int perLine = (int)Math.Ceiling(ids.Length / (double)MaxIdLines);
+
+            var sb = new StringBuilder();
+            for (int i = 0; i < ids.Length; i++)
+            {
+                sb.Append(ids[i]);
+                if (i == ids.Length - 1) break;
+
+                sb.Append(',');
+                bool lineIsFull = (i + 1) % perLine == 0;
+                sb.Append(lineIsFull ? Environment.NewLine : " ");
+            }
+            return sb.ToString();
+        }
+        private const int MaxColumnWidth = 420;
+
+        private void AutoSizeGrid(DataGridView grid)
+        {
+            if (grid.Columns.Count == 0) return;
+
+            grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+
+            int total = 0;
+            foreach (DataGridViewColumn col in grid.Columns)
+            {
+                col.Width = Math.Min(col.Width + 10, MaxColumnWidth);   // <-- cap added
+                total += col.Width;
+            }
+            grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+
+            // let the id column wrap
+            if (grid.Columns.Contains("DataGenProcessHDIDs"))
+            {
+                var idCol = grid.Columns["DataGenProcessHDIDs"];
+                idCol.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+                idCol.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            }
+
+            grid.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;  // rows grow to fit
+
+            int available = grid.ClientSize.Width - grid.RowHeadersWidth
+                            - SystemInformation.VerticalScrollBarWidth;
+            if (total < available)
+                grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+        }
+
         private void dgvBriefList_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             if (dgvBriefList.Columns[e.ColumnIndex].HeaderText == "Click to View")
@@ -349,13 +418,13 @@ namespace DG_Tool.WinForms.OutputFile
                                 }
                                 else
                                 {
-                                    my_data = ofp.padding_filler(newRow[variableID].ToString());
+                                    my_data = dg_functions.padding_filler(newRow[variableID].ToString());
                                 }
                                 break;
 
                             case "R_8":
                                 my_data = ofp.Random8digits();
-                                r8_data_list.Add(ofp.padding(my_data));
+                                r8_data_list.Add(dg_functions.padding(my_data));
                                 break;
 
                             case "R8_P":
@@ -370,12 +439,12 @@ namespace DG_Tool.WinForms.OutputFile
                                 }
                                 else
                                 {
-                                    my_data = ofp.acc((Int64.Parse(newRow[variableID].ToString()) + i).ToString());
+                                    my_data = dg_functions.acc((Int64.Parse(newRow[variableID].ToString()) + i).ToString());
                                 }
                                 break;
 
                             case "3P":
-                                my_data = ofp.padding(newRow[variableID].ToString());
+                                my_data = dg_functions.padding(newRow[variableID].ToString());
                                 break;
 
                             case "R_16_Hex":
@@ -391,11 +460,11 @@ namespace DG_Tool.WinForms.OutputFile
                                 break;
 
                             case "Pad_8":
-                                my_data = ofp.Pad3_F(newRow[variableID].ToString());
+                                my_data = dg_functions.Pad3_F(newRow[variableID].ToString());
                                 break;
 
                             case "Pad_16":
-                                my_data = ofp.Pad3_F(newRow[variableID].ToString());
+                                my_data = dg_functions.Pad3_F(newRow[variableID].ToString());
                                 break;
 
                             case "ICCID_NS":
@@ -406,7 +475,7 @@ namespace DG_Tool.WinForms.OutputFile
                                 else
                                 {
                                     string icicid_num = newRow[variableID].ToString();
-                                    my_data = ofp.nibble_swapped(icicid_num);
+                                    my_data = dg_functions.nibble_swapped(icicid_num);
                                 }
                                 break;
 
@@ -418,7 +487,7 @@ namespace DG_Tool.WinForms.OutputFile
                                 else
                                 {
                                     string imsi_num = "809" + newRow[variableID].ToString();
-                                    my_data = ofp.nibble_swapped(imsi_num);
+                                    my_data = dg_functions.nibble_swapped(imsi_num);
                                 }
                                 break;
 
@@ -440,7 +509,7 @@ namespace DG_Tool.WinForms.OutputFile
                                     else
                                     {
                                         my_data = newRow[variableID].ToString();
-                                        my_data += ofp.GetLuhnCheckDigit(newRow[variableID].ToString());
+                                        my_data += dg_functions.GetLuhnCheckDigit(newRow[variableID].ToString());
                                     }
                                 }
                                 break;
@@ -459,7 +528,7 @@ namespace DG_Tool.WinForms.OutputFile
                                     else
                                     {
                                         //my_data = padding((Int64.Parse(first_icicid) + i).ToString());
-                                        my_data = ofp.CalculateKCV(newRow[variableID].ToString(), "AES");
+                                        my_data = dg_functions.CalculateKCV(newRow[variableID].ToString(), "AES");
                                     }
                                 }
                                 break;
@@ -478,7 +547,7 @@ namespace DG_Tool.WinForms.OutputFile
                                     else
                                     {
                                         //my_data = padding((Int64.Parse(first_icicid) + i).ToString());
-                                        my_data = ofp.CalculateKCV(newRow[variableID].ToString(), "DES");
+                                        my_data = dg_functions.CalculateKCV(newRow[variableID].ToString(), "DES");
                                     }
                                 }
                                 break;
@@ -491,7 +560,7 @@ namespace DG_Tool.WinForms.OutputFile
                                 else
                                 {
                                     my_data = newRow[variableID].ToString();
-                                    my_data = ofp.MSISDN_F(my_data);
+                                    my_data = dg_functions.MSISDN_F(my_data);
                                 }
                                 break;
 
@@ -503,7 +572,7 @@ namespace DG_Tool.WinForms.OutputFile
                                 else
                                 {
                                     my_data = newRow[variableID].ToString();
-                                    my_data = ofp.nibble_swapped(my_data);
+                                    my_data = dg_functions.nibble_swapped(my_data);
                                 }
                                 break;
 
@@ -511,11 +580,11 @@ namespace DG_Tool.WinForms.OutputFile
                                 if (varCount == 1)
                                 {
                                     string[] varIDs = variableID.Split(',');
-                                    my_data = ofp.AES_ENCYPRTION(newRow[varIDs[0]].ToString(), newRow[varIDs[1]].ToString());
+                                    my_data = dg_functions.AES_ENCYPRTION(newRow[varIDs[0]].ToString(), newRow[varIDs[1]].ToString());
                                 }
                                 //else if (varCount == 0)
                                 //{
-                                //    my_data = ofp.AES_ENCYPRTION(newRow[variableID].ToString(), "db4389530b991a10b557246db732cd9a");
+                                //    my_data = dg_functions.AES_ENCYPRTION(newRow[variableID].ToString(), "db4389530b991a10b557246db732cd9a");
 
                                 //}
                                 else
@@ -529,11 +598,11 @@ namespace DG_Tool.WinForms.OutputFile
                                 if (varCount == 1)
                                 {
                                     string[] varIDs = variableID.Split(',');
-                                    my_data = ofp.Encrypt_SingleDES(newRow[varIDs[0]].ToString(), newRow[varIDs[1]].ToString());
+                                    my_data = dg_functions.Encrypt_SingleDES(newRow[varIDs[0]].ToString(), newRow[varIDs[1]].ToString());
                                 }
                                 //else if (varCount == 0)
                                 //{
-                                //    my_data = ofp.Encrypt_SingleDES(newRow[variableID].ToString(), "db4389530b991a10b557246db732cd9a");
+                                //    my_data = dg_functions.Encrypt_SingleDES(newRow[variableID].ToString(), "db4389530b991a10b557246db732cd9a");
 
                                 //}
                                 else
@@ -545,11 +614,11 @@ namespace DG_Tool.WinForms.OutputFile
                             //    if (varCount == 1)
                             //    {
                             //        string[] varIDs = variableID.Split(',');
-                            //        my_data = ofp.AES_ENCYPRTION(newRow[varIDs[0]].ToString(), newRow[varIDs[1]].ToString());
+                            //        my_data = dg_functions.AES_ENCYPRTION(newRow[varIDs[0]].ToString(), newRow[varIDs[1]].ToString());
                             //    }
                             //    else if (varCount == 0)
                             //    {
-                            //        my_data = ofp.AES_ENCYPRTION(newRow[variableID].ToString(), "E8F8D8DCAA7DF2D372B0446C196E580C");
+                            //        my_data = dg_functions.AES_ENCYPRTION(newRow[variableID].ToString(), "E8F8D8DCAA7DF2D372B0446C196E580C");
 
                             //    }
                             //    else
@@ -565,7 +634,7 @@ namespace DG_Tool.WinForms.OutputFile
                                 }
                                 else
                                 {
-                                    my_data = ""; //ofp.Aes_128(newRow[variableID].ToString());
+                                    my_data = ""; //dg_functions.Aes_128(newRow[variableID].ToString());
                                 }
                                 break;
                             case "AES_128":

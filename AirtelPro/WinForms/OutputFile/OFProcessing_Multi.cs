@@ -523,7 +523,7 @@ namespace DG_Tool.WinForms.OutputFile
                     mergemca_2(inputFile, inputFile2);
                     mergemca_dynamic2(inputFile, inputFile2,  $"{customer1}_ICCID,{customer1}_IMSI,{customer2}_ICCID,{customer2}_IMSI", "csv");
                  
-                    upload_log();
+                    //upload_log();
                     
                 }
                 else if (flag_merger == 3)
@@ -540,9 +540,15 @@ namespace DG_Tool.WinForms.OutputFile
                     File.Delete(inputFile2);
                     File.Delete(inputFile3);
 
-                    upload_log();
+
+
+
+                   
                     
                 }
+
+                logString.Append($"\n**************************************[Logging Out] File Processing Tool is closing [{DateTime.Now}] **************************************\n");
+                upload_log();
                 //this.Invoke(new MethodInvoker(delegate
                 //{
                 //    panel1.Visible = false;
@@ -603,15 +609,22 @@ namespace DG_Tool.WinForms.OutputFile
 
             try
             {
+                int mccmnc1_len = primaryPath.ToLowerInvariant().Contains("voda") ? 5 : 5;
+                int mccmnc2_len = secondaryPath.ToLowerInvariant().Contains("voda") ? 5 : 5;
                 logString.Append($"    - Outfile Generation Started:\n");
                 var primaryColumns = "ICCID,PIN1,PIN2,PUK1,PUK2,ADM1,KIC1,KID1,KIK1,PSK,DEK1,LICENSE_KEY#";
                 
                 var mergeColumns = "IMSI,ACC,KI,OPC";
 
-                primaryColumns = primaryColumns + ",";
+                
                 mergeColumns = mergeColumns + ",";
                 var primaryLines = File.ReadAllLines(primaryPath);
 
+                if (primaryLines.Length > 0 && primaryLines[0].ToUpper().Contains("ASCII_ICCID"))
+                {
+                    primaryColumns = "ICCID,PIN1,PIN2,PUK1,PUK2,ADM1,KIC1,KID1,KIK1,PSK,DEK1,ASCII_ICCID,LICENSE_KEY#";
+                }
+                primaryColumns = primaryColumns + ",";
                 var secondaryLines = File.ReadAllLines(secondaryPath);
 
                 int primaryCount = File.ReadLines(primaryPath).Count();
@@ -627,10 +640,7 @@ namespace DG_Tool.WinForms.OutputFile
                 }
 
 
-                if (primaryLines.Length > 0 &&    primaryLines[0].ToUpper().Contains("ASCII_ICCID"))
-                {
-                    primaryColumns = "ICCID,PIN1,PIN2,PUK1,PUK2,ADM1,KIC1,KID1,KIK1,PSK,DEK1,ASCII_ICCID,LICENSE_KEY#";
-                }
+                
                 ////deleting all files after reading
                 //File.Delete(primaryPath);
                 //File.Delete(secondaryPath);
@@ -665,6 +675,7 @@ namespace DG_Tool.WinForms.OutputFile
 
                 for (int i = 1; i < primaryLines.Length; i++)
                 {
+                    string imsi1 = "", imsi2 = "", imsi3 = "";
                     var primaryValues = primaryLines[i].Split(',').ToList();
                     var secondaryValues = i < secondaryLines.Length ? secondaryLines[i].Split(',').ToList() : new List<string>();
 
@@ -685,6 +696,21 @@ namespace DG_Tool.WinForms.OutputFile
                         {
                             line.Add(indexPrimary < primaryValues.Count ? primaryValues[indexPrimary] : "");
                             line.Add(indexSecondary >= 0 && indexSecondary < secondaryValues.Count ? secondaryValues[indexSecondary] : "");
+
+                            if (col == "IMSI,")
+                            {
+                                imsi1 = (indexPrimary < primaryValues.Count ? primaryValues[indexPrimary] : "");
+                                imsi2 = (indexSecondary >= 0 && indexSecondary < secondaryValues.Count ? secondaryValues[indexSecondary] : "");
+                                
+                                // Generate MCCMNC from first 6 swapped IMSI nibbles
+                                string mccmnc1 = mncmcc_function(NibbleSwap(imsi1).Substring(3, mccmnc1_len), mccmnc1_len);
+                                string mccmnc2 = mncmcc_function(NibbleSwap(imsi2).Substring(3, mccmnc2_len), mccmnc2_len);
+                              
+
+                                line.Add(mccmnc1);
+                                line.Add(mccmnc2);
+                              
+                            }
                         }
                     }
 
@@ -751,10 +777,10 @@ namespace DG_Tool.WinForms.OutputFile
             
 
 
-                //logString.Append($"\nFile Merged Succesfully\n");
+                logString.Append($"\nFile Merged Succesfully\n");
                
-                //logString.Append($"\nFile encrypted Succesfully Filename : {outputPath}\n");
-                logString.Append($"\n**************************************[Logging Out] File Processing Tool is closing [{DateTime.Now}] **************************************\n");
+                logString.Append($"\nFile encrypted Succesfully Filename : {outputPath}\n");
+               
 
 
                 //upload_log();
@@ -777,10 +803,16 @@ namespace DG_Tool.WinForms.OutputFile
 
             try
             {
+                int mccmnc1_len = primaryPath.ToLowerInvariant().Contains("voda") ? 5 : 5;
+                int mccmnc2_len = secondaryPath.ToLowerInvariant().Contains("voda") ? 5 : 5;
+                int mccmnc3_len = thirdfilePath.ToLowerInvariant().Contains("voda") ? 5 : 5;
+
+
+
                 logString.Append($"    - Outfile Generation Started:\n");
                 var primaryColumns = "ICCID,PIN1,PIN2,PUK1,PUK2,ADM1,KIC1,KID1,KIK1,PSK,DEK1,LICENSE_KEY#";
                 var mergeColumns = "IMSI,ACC,KI,OPC";
-                primaryColumns = primaryColumns + ",";
+               
                 mergeColumns = mergeColumns + ",";
                 var primaryLines = File.ReadAllLines(primaryPath);
 
@@ -789,7 +821,7 @@ namespace DG_Tool.WinForms.OutputFile
                 {
                     primaryColumns = "ICCID,PIN1,PIN2,PUK1,PUK2,ADM1,KIC1,KID1,KIK1,PSK,DEK1,ASCII_ICCID,LICENSE_KEY#";
                 }
-
+                primaryColumns = primaryColumns + ",";
 
                 var secondaryLines = File.ReadAllLines(secondaryPath);
                 var thirdfileLines = File.ReadAllLines(thirdfilePath);
@@ -842,9 +874,10 @@ namespace DG_Tool.WinForms.OutputFile
                 var outputLines = new List<string> { header_Data };
 
 
-
+                
                 for (int i = 1; i < primaryLines.Length; i++)
                 {
+                    string imsi1 = "", imsi2 = "", imsi3 = "";
                     var primaryValues = primaryLines[i].Split(',').ToList();
                     var secondaryValues = i < secondaryLines.Length ? secondaryLines[i].Split(',').ToList() : new List<string>();
                     var thirdfileValues = i < thirdfileLines.Length ? thirdfileLines[i].Split(',').ToList() : new List<string>();
@@ -862,12 +895,42 @@ namespace DG_Tool.WinForms.OutputFile
                         {
                             line.Add(indexPrimary < primaryValues.Count ? primaryValues[indexPrimary] : "");
                         }
+                        
                         else if (mergeColumns.Contains(col))
                         {
                             line.Add(indexPrimary < primaryValues.Count ? primaryValues[indexPrimary] : "");
                             line.Add(indexSecondary >= 0 && indexSecondary < secondaryValues.Count ? secondaryValues[indexSecondary] : "");
                             line.Add(indexthirdfile >= 0 && indexthirdfile < thirdfileValues.Count ? thirdfileValues[indexthirdfile] : "");
+                            if (col == "IMSI,")
+                            {
+                                imsi1 = (indexPrimary < primaryValues.Count ? primaryValues[indexPrimary] : "");
+                                imsi2 = (indexSecondary >= 0 && indexSecondary < secondaryValues.Count ? secondaryValues[indexSecondary] : "");
+                                imsi3 = (indexthirdfile >= 0 && indexthirdfile < thirdfileValues.Count ? thirdfileValues[indexthirdfile] : "");
+                                // Generate MCCMNC from first 6 swapped IMSI nibbles
+                                string mccmnc1 = mncmcc_function(NibbleSwap(imsi1).Substring(3,mccmnc1_len),mccmnc1_len);
+                                string mccmnc2 = mncmcc_function(NibbleSwap(imsi2).Substring(3,mccmnc2_len),mccmnc2_len);
+                                string mccmnc3 = mncmcc_function(NibbleSwap(imsi3).Substring(3,mccmnc3_len),mccmnc3_len);
+
+                                line.Add(mccmnc1);
+                                line.Add(mccmnc2);
+                                line.Add(mccmnc3);
+                            }
                         }
+
+                        //else if (col == "IMSI,")
+                        //{
+
+
+                        //    // Generate MCCMNC from first 6 swapped IMSI nibbles
+                        //    string mccmnc1 = mncmcc_function(NibbleSwap(imsi1), 6);
+                        //    string mccmnc2 = mncmcc_function(NibbleSwap(imsi2), 6);
+                        //    string mccmnc3 = mncmcc_function(NibbleSwap(imsi3), 5);
+
+                        //    line.Add(mccmnc1);
+                        //    line.Add(mccmnc2);
+                        //    line.Add(mccmnc3);
+                        //}
+
                     }
 
                     // Add extra values (unnamed columns)
@@ -936,7 +999,7 @@ namespace DG_Tool.WinForms.OutputFile
 
 
                 logString.Append($"\nFile encrypted Succesfully Filename : {outputPath}\n");
-                logString.Append($"\n**************************************[Logging Out] File Processing Tool is closing [{DateTime.Now}] **************************************\n");
+                //logString.Append($"\n**************************************[Logging Out] File Processing Tool is closing [{DateTime.Now}] **************************************\n");
                
 
                 //upload_log();
@@ -1021,8 +1084,9 @@ namespace DG_Tool.WinForms.OutputFile
                 var outputLines = new List<string>();
                 if (extension == "OTA")
                 {
-                    outputLines.Add("Var_out: AIRTEL IMSI / AIRTEL ICCID / BSNL IMSI / BSNL ICCID / VI IMSI / Vi ICCID / KIC / KID / KIK");
-                    outputLines.Add("");
+                //    outputLines.Add("Var_out: AIRTEL IMSI / AIRTEL ICCID / BSNL IMSI / BSNL ICCID / VI IMSI / Vi ICCID / KIC / KID / KIK");
+                //    outputLines.Add("");
+                    outputLines.Add("AIRTEL IMSI;AIRTEL ICCID;BSNL IMSI;BSNL ICCID;VI IMSI;Vi ICCID;KIC;KID;KIK");
                 }
                 else if (extension == "txt")
                 { outputLines.Add("AIRTEL ICCID;AIRTEL IMSI;BSNL ICCID;BSNL IMSI;VI ICCID;VI IMSI"); }
@@ -1097,7 +1161,8 @@ namespace DG_Tool.WinForms.OutputFile
                     }
                     if (extension == "OTA")
                     {
-                        outputLines.Add(string.Join(" ", line));
+                        //outputLines.Add(string.Join(" ", line));
+                        outputLines.Add(string.Join(";", line));
                     }
                     else if (extension == "txt")
                     {
@@ -1132,11 +1197,17 @@ namespace DG_Tool.WinForms.OutputFile
                 if (extension == "csv")
                 {
                     string csvfile = outputPath;
-                    DataTable dataTable = ConvertCsvToDataTable(csvfile);
-                    SaveDataTableToExcel(dataTable, Path.Combine(folderPath, $"Airtel+BSNL+VI_Mapping_{timestamp}.xlsx"));
+                    DataTable dataTable = ConvertCsvToDataTable(csvfile, ',');
+                    SaveDataTableToExcel(dataTable, Path.Combine(folderPath, $"{outputPath.Replace(".csv", ".xlsx")}"));
                 }
-                
-                
+
+                if ((extension == "OTA") || (extension == "txt"))
+                {
+                    string csvfile = outputPath;
+                    DataTable dataTable = ConvertCsvToDataTable(csvfile, ';');
+                    SaveDataTableToExcel(dataTable, Path.Combine(folderPath, $"{outputPath.Replace(".", "_")}.xlsx"));
+                }
+
 
 
                 logString.Append($"\nFile Merged Successfully\n");
@@ -1280,8 +1351,8 @@ namespace DG_Tool.WinForms.OutputFile
                 if (extension == "csv")
                 {
                     string csvfile = outputPath;
-                    DataTable dataTable = ConvertCsvToDataTable(csvfile);
-                    SaveDataTableToExcel(dataTable, Path.Combine(folderPath, $"Airtel+BSNL+VI_Mapping_{timestamp}.xlsx"));
+                    DataTable dataTable = ConvertCsvToDataTable(csvfile, ',');
+                    SaveDataTableToExcel(dataTable, Path.Combine(folderPath, $"{outputPath.Replace(".csv", ".xlsx")}"));
                 }
 
 
@@ -1331,6 +1402,29 @@ namespace DG_Tool.WinForms.OutputFile
                 revs = "INVALID_NS_" + s;
 
             return revs;
+        }
+
+        public static string mncmcc_function(string s, int len)
+        {
+            s = s.Trim();
+            string data = "";
+            s = s.Substring(0, len);
+            if (s.Length > 0)
+            {
+                if (s.Length % 2 != 0)
+                {
+                    s += 'F';
+                }
+
+                // Use string interpolation or concatenation, not '+' on chars
+                data = $"{s[1]}{s[0]}{s[5]}{s[2]}{s[4]}{s[3]}";
+            }
+            else
+            {
+                data = "INVALID_NS_" + s;
+            }
+
+            return data;
         }
         private void BackgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
@@ -1382,7 +1476,7 @@ namespace DG_Tool.WinForms.OutputFile
             }
         }
 
-        public static DataTable ConvertCsvToDataTable(string csvFilePath)
+        public static DataTable ConvertCsvToDataTable(string csvFilePath, char delimiter = ',')
         {
             DataTable dt = new DataTable();
             using (StreamReader sr = new StreamReader(csvFilePath))
@@ -1391,7 +1485,7 @@ namespace DG_Tool.WinForms.OutputFile
 
 
             {
-                string[] headers = sr.ReadLine().Split(','); // Read first row as headers
+                string[] headers = sr.ReadLine().Split(delimiter); // Read first row as headers
                 foreach (string header in headers)
                 {
                     dt.Columns.Add(header);
@@ -1399,7 +1493,7 @@ namespace DG_Tool.WinForms.OutputFile
 
                 while (!sr.EndOfStream)
                 {
-                    string[] rows = sr.ReadLine().Split(',');
+                    string[] rows = sr.ReadLine().Split(delimiter);
                     dt.Rows.Add(rows);
 
                 }
@@ -1442,7 +1536,7 @@ namespace DG_Tool.WinForms.OutputFile
             }
             catch (Exception ex)
             {
-                throw new Exception($"Error while converting into excel: {ex.Message}");
+                MessageBox.Show($"Error while converting into excel: {ex.Message}");
             }
         }
 
